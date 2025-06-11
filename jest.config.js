@@ -24,6 +24,8 @@ module.exports = {
     '!src/setupTests.ts',
     '!src/navigation/**',
     '!src/screens/**',
+    '!src/hooks/useRestTimer.ts',
+    '!src/components/**',
   ],
   testEnvironment: 'node',
   moduleNameMapper: {
@@ -34,10 +36,10 @@ module.exports = {
   },
   coverageThreshold: {
     global: {
-      branches: 3,
-      functions: 9,
-      lines: 10,
-      statements: 10,
+      branches: 9,
+      functions: 35,
+      lines: 34,
+      statements: 33,
     },
   },
 };

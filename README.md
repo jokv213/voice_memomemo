@@ -49,8 +49,8 @@ npm start
 
 ### 音声処理
 
-- **expo-av** - 音声録音
-- **@react-native-voice/voice** - 音声認識
+- **expo-av** - 音声録音・権限管理
+- **@react-native-voice/voice** 3.1.5 - 音声認識（セキュリティ修正版）
 
 ### UI/UX
 
@@ -514,8 +514,10 @@ Configure update channels in `eas.json`:
 
 1. **音声認識が動作しない**
 
-   - マイク権限を確認
+   - 音声権限は自動でexpo-avが管理します
    - デバイスの音声認識設定を確認
+   - iOS: 設定 > プライバシーとセキュリティ > マイク
+   - Android: 設定 > アプリ > 権限 > マイク
 
 2. **ビルドエラー**
 

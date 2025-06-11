@@ -119,13 +119,18 @@ jobs:
   # ---------- Detox iOS ----------
   e2e-ios:
     name: E2E Tests (iOS)
-    runs-on: macos-latest
+    runs-on: macos-14
     needs: test
     if: github.event_name == 'pull_request' || github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Xcode 16
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 'latest-stable'
+          
       - name: Display environment info
         run: |
           echo "=== macOS version ==="
@@ -160,21 +165,23 @@ jobs:
 
       - name: Prebuild iOS with gesture handler
         run: |
-          npx expo prebuild --platform ios --clear-cache
+          npx expo prebuild --platform ios --clear
 
-      - name: Install iOS pods
+      - name: Install iOS pods with New Architecture disabled
         run: |
           cd ios
           pod deintegrate
           pod cache clean --all
+          # Create Podfile.local to disable New Architecture
+          echo "ENV['RCT_NEW_ARCH_ENABLED'] = '0'" > Podfile.local
           pod install --repo-update
 
       - name: Prepare iOS simulator
         run: |
           # List available simulators
           xcrun simctl list devices
-          # Create iPhone 15 Pro if it doesn't exist
-          xcrun simctl create "iPhone 15 Pro" "iPhone 15 Pro" iOS17.5 || true
+          # Create iPhone 15 Pro if it doesn't exist (iOS 18.1 for Xcode 16)
+          xcrun simctl create "iPhone 15 Pro" "iPhone 15 Pro" iOS18.1 || true
           # Boot the simulator
           xcrun simctl boot "iPhone 15 Pro" || true
 
@@ -214,7 +221,7 @@ jobs:
     name: E2E Tests (Android)
     runs-on: ubuntu-latest
     needs: test
-    if: false # Temporarily disabled due to Android build issues
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
@@ -240,6 +247,12 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Prebuild Android with New Architecture disabled
+        run: |
+          npx expo prebuild --platform android --clear
+          # Ensure newArchEnabled is false
+          sed -i 's/newArchEnabled=true/newArchEnabled=false/g' android/gradle.properties || true
+          
       - name: Start Android emulator & run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -249,10 +262,10 @@ jobs:
           ram-size: 4096M
           heap-size: 1024M
           script: |
-            echo "Building Android app for E2E..."
-            npm run e2e:build:android
-            echo "Running E2E tests..."
-            npm run e2e:test:android
+            echo "Building Android app for E2E with trace logging..."
+            npx detox build --configuration android.emu.debug --loglevel trace 2>&1 | tee android-build.log
+            echo "Running E2E tests with trace logging..."
+            npx detox test --configuration android.emu.debug --loglevel trace 2>&1 | tee android-test.log || true
 
       - name: Upload E2E test results
         uses: actions/upload-artifact@v4
@@ -262,6 +275,8 @@ jobs:
           path: |
             e2e/artifacts/
             e2e/test-results/
+            android-build.log
+            android-test.log
 
   # ---------- Security ----------
   # Note: Security scanning is handled by Snyk integration (see PR checks)

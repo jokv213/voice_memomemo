@@ -23,7 +23,7 @@
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "@react-native-async-storage/async-storage": "2.1.2",
-    "@react-native-voice/voice": "^3.2.4",
+    "@react-native-voice/voice": "^3.1.5",
     "@react-navigation/bottom-tabs": "^7.3.14",
     "@react-navigation/native": "^7.1.10",
     "@react-navigation/stack": "^7.3.3",
@@ -34,7 +34,6 @@
     "expo-av": "^15.1.6",
     "expo-constants": "^17.1.6",
     "expo-notifications": "^0.31.3",
-    "expo-permissions": "^14.4.0",
     "expo-secure-store": "^14.2.3",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
