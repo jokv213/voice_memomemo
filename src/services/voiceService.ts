@@ -10,7 +10,10 @@ const Voice = {
   onSpeechResults: null as any,
   onSpeechError: null as any,
   onSpeechPartialResults: null as any,
-  start: () => Promise.resolve(),
+  start: (locale?: string) => {
+    console.log('Mock voice start with locale:', locale);
+    return Promise.resolve();
+  },
   stop: () => Promise.resolve(),
   destroy: () => Promise.resolve(),
 };
