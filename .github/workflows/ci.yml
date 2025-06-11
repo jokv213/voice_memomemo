@@ -1,0 +1,227 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🚨 Lint code
+      run: npm run lint
+
+    - name: 🔧 Check TypeScript
+      run: npm run typecheck
+
+    - name: 🧪 Run unit tests
+      run: npm run test -- --coverage --watchAll=false
+
+    - name: 📊 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+
+  build-preview:
+    name: EAS Build Preview
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🚀 Create preview build
+      run: eas build --platform all --profile preview --non-interactive
+
+  e2e-ios:
+    name: E2E Tests iOS
+    runs-on: macos-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 💎 Setup Ruby (for iOS)
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
+
+    - name: 🍎 Setup iOS environment
+      run: |
+        sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+        xcrun simctl boot "iPhone 15 Pro" || true
+
+    - name: 🔨 Build for Detox
+      run: npm run e2e:build:ios
+
+    - name: 🧪 Run E2E tests
+      run: npm run e2e:test:ios
+
+  e2e-android:
+    name: E2E Tests Android
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: 🤖 Setup Android environment
+      uses: android-actions/setup-android@v2
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🎯 Create AVD
+      run: |
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-30;google_apis;x86_64"
+        echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --force --name Pixel_3a_API_30_x86 --device "pixel_3a" --package "system-images;android-30;google_apis;x86_64" --tag "google_apis" --abi "x86_64"
+
+    - name: 🚀 Start AVD
+      run: |
+        $ANDROID_HOME/emulator/emulator -avd Pixel_3a_API_30_x86 -no-window -no-audio -no-boot-anim &
+        adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+
+    - name: 🔨 Build for Detox
+      run: npm run e2e:build:android
+
+    - name: 🧪 Run E2E tests
+      run: npm run e2e:test:android
+
+  deploy-preview:
+    name: Deploy to Preview
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, build-preview]
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🚀 Deploy preview update
+      run: eas update --branch preview --message "Preview deployment from develop branch"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [lint-and-test, e2e-ios, e2e-android]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🏗 Setup repo
+      uses: actions/checkout@v4
+
+    - name: 🏗 Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: 🏗 Setup EAS
+      uses: expo/expo-github-action@v8
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: 📦 Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: 🚀 Deploy production update
+      run: eas update --branch production --message "Production deployment from main branch"
+
+    - name: 📱 Submit to app stores (manual trigger)
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        eas submit --platform ios --latest
+        eas submit --platform android --latest

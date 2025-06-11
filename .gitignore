@@ -31,7 +31,29 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
+
+# Testing
+coverage/
+*.lcov
+
+# EAS
+.easignore
+
+# Service account keys
+google-service-account.json
+apple-service-account.json
+
+# Build artifacts
+android/app/build/
+ios/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
