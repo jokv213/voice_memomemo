@@ -244,6 +244,248 @@ GitHub Actionsが以下を自動実行：
 - セキュリティスキャン
 - EAS Update（mainブランチ）
 
+## 📦 Release Flow
+
+The release process follows a standardized workflow from tagging to store submission:
+
+1. **Create Release Tag**
+
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   git push origin v1.0.0
+   ```
+
+2. **Automated CI Pipeline**
+
+   - Runs comprehensive tests (unit, E2E, security)
+   - Performs type checking and linting
+   - Generates build artifacts
+
+3. **EAS Build Execution**
+
+   ```bash
+   # Production builds
+   eas build --platform ios --profile production
+   eas build --platform android --profile production
+   ```
+
+4. **Store Submission**
+   - iOS: Upload to App Store Connect via EAS Submit
+   - Android: Deploy to Google Play Console
+
+```bash
+# Automated store submission
+eas submit --platform ios
+eas submit --platform android
+```
+
+## 🔧 Required Environment Variables
+
+Configure the following environment variables for proper application functionality:
+
+### Production Environment
+
+```bash
+# Expo Configuration
+EXPO_TOKEN=your_expo_access_token
+
+# Supabase Backend
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Error Monitoring
+SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+SENTRY_AUTH_TOKEN=your_sentry_auth_token
+
+# Security Scanning
+SNYK_TOKEN=your_snyk_token
+
+# Code Quality
+CODECOV_TOKEN=your_codecov_token
+```
+
+### Development Environment
+
+```bash
+# Local Development
+EXPO_PUBLIC_SUPABASE_URL=your_local_supabase_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_local_supabase_key
+EXPO_PUBLIC_SENTRY_DSN=your_dev_sentry_dsn
+```
+
+### GitHub Secrets Configuration
+
+Set these in your repository settings > Secrets and variables > Actions:
+
+- `EXPO_TOKEN`
+- `SUPABASE_URL` & `SUPABASE_ANON_KEY`
+- `SENTRY_AUTH_TOKEN`
+- `SNYK_TOKEN`
+
+## ✅ QA Checklist
+
+### Authentication Flow
+
+- [ ] User registration with email validation
+- [ ] Login with valid credentials
+- [ ] Logout functionality
+- [ ] Password reset flow
+- [ ] Role-based access (individual vs trainer)
+
+### Voice Input
+
+- [ ] Microphone permission request
+- [ ] Voice recording starts/stops properly
+- [ ] Audio transcription accuracy
+- [ ] Exercise data parsing (name, weight, reps, sets)
+- [ ] Save functionality with network connectivity
+- [ ] Offline mode fallback
+
+### Data Management
+
+- [ ] Session list displays correctly
+- [ ] Exercise statistics visualization
+- [ ] Data persistence and sync
+- [ ] Pull-to-refresh functionality
+- [ ] Search and filter capabilities
+
+### Rest Timer
+
+- [ ] Timer countdown accuracy
+- [ ] Background execution
+- [ ] Notification triggers
+- [ ] Preset timer selection (30s, 1m, 90s, 2m, 3m)
+- [ ] Sound and vibration alerts
+
+### Cross-Platform Testing
+
+- [ ] iOS functionality parity
+- [ ] Android functionality parity
+- [ ] Different screen sizes and orientations
+- [ ] Network interruption handling
+- [ ] App backgrounding/foregrounding
+
+### Performance
+
+- [ ] App startup time < 3 seconds
+- [ ] Smooth navigation between screens
+- [ ] Memory usage optimization
+- [ ] Battery usage efficiency
+
+## 🪶 Sentry DSN Setup Instructions
+
+### 1. Create Sentry Project
+
+1. Sign up at [sentry.io](https://sentry.io)
+2. Create new project for React Native
+3. Copy the DSN from project settings
+
+### 2. Configure Environment Variables
+
+```bash
+# Add to .env file
+EXPO_PUBLIC_SENTRY_DSN=https://your-key@sentry.io/project-id
+```
+
+### 3. Initialize Sentry in App
+
+The Sentry configuration is already implemented in `src/services/errorService.ts`:
+
+```bash
+# Verify Sentry integration
+npm start
+# Check Sentry dashboard for incoming events
+```
+
+### 4. Upload Source Maps (for production)
+
+```bash
+# Configure in eas.json
+{
+  "build": {
+    "production": {
+      "env": {
+        "SENTRY_AUTH_TOKEN": "your_auth_token"
+      }
+    }
+  }
+}
+```
+
+### 5. Test Error Reporting
+
+```bash
+# Trigger test error in development
+# Check Sentry dashboard for error events
+```
+
+## 🚀 EAS Update Commands
+
+### Over-the-Air (OTA) Updates
+
+#### Development Channel
+
+Deploy updates to preview/development channel:
+
+```bash
+# Preview channel update
+pnpm ota:dev
+# or manually:
+eas update --branch preview --message "Development update"
+```
+
+#### Production Channel
+
+Deploy updates to production users:
+
+```bash
+# Production channel update
+pnpm ota:prod
+# or manually:
+eas update --branch production --message "Production hotfix"
+```
+
+### Update Management
+
+```bash
+# View update status
+eas update:list
+
+# View specific branch updates
+eas update:list --branch production
+
+# Rollback to previous update
+eas update:rollback --branch production
+
+# Configure auto-updates
+eas update:configure
+```
+
+### Channel Configuration
+
+Configure update channels in `eas.json`:
+
+```json
+{
+  "build": {
+    "preview": {
+      "channel": "preview"
+    },
+    "production": {
+      "channel": "production"
+    }
+  }
+}
+```
+
+### Best Practices
+
+- Use preview channel for staging/QA testing
+- Production updates should be thoroughly tested
+- Include meaningful commit messages for tracking
+- Monitor update adoption rates in Expo dashboard
+
 ## セキュリティ
 
 - Supabase Row Level Securityによるデータアクセス制御
