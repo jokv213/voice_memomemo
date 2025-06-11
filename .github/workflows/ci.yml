@@ -136,6 +136,14 @@ jobs:
       - name: Install Detox CLI
         run: npm install -g detox-cli
 
+      - name: Prebuild iOS with gesture handler
+        run: |
+          npx expo prebuild --platform ios --clean
+
+      - name: Install iOS pods
+        run: |
+          cd ios && pod install
+
       - name: Prepare iOS simulator
         run: |
           xcrun simctl boot "iPhone 15 Pro" || true

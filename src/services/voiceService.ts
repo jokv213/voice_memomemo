@@ -1,22 +1,7 @@
 import {Audio} from 'expo-av';
-// import Voice from '@react-native-voice/voice';
+import Voice from '@react-native-voice/voice';
 import * as Permissions from 'expo-permissions';
 import {Result} from '../lib/supabase';
-
-// Mock Voice for E2E testing
-const Voice = {
-  onSpeechStart: null as any,
-  onSpeechEnd: null as any,
-  onSpeechResults: null as any,
-  onSpeechError: null as any,
-  onSpeechPartialResults: null as any,
-  start: (locale?: string) => {
-    console.log('Mock voice start with locale:', locale);
-    return Promise.resolve();
-  },
-  stop: () => Promise.resolve(),
-  destroy: () => Promise.resolve(),
-};
 
 export interface VoiceRecording {
   uri: string;
