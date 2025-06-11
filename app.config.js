@@ -46,7 +46,7 @@ export default {
       bundler: 'metro',
     },
     plugins: [
-      'expo-router',
+      'expo-secure-store',
       [
         'expo-av',
         {
@@ -57,12 +57,11 @@ export default {
       [
         'expo-notifications',
         {
-          icon: './assets/notification-icon.png',
-          color: '#ffffff',
+          icon: './assets/icon.png',
+          color: '#3498db',
           defaultChannel: 'default',
         },
       ],
-      'expo-secure-store',
     ],
     extra: {
       eas: {

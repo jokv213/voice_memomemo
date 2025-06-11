@@ -2,6 +2,7 @@ import React, {createContext, useContext, useEffect, useState, ReactNode} from '
 import * as SecureStore from 'expo-secure-store';
 import {supabase, auth as authService} from '../lib/supabase';
 import {AuthContextType, AuthState} from '../types/auth';
+import {identifyUser, clearUser, addBreadcrumb} from '../services/errorService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -139,6 +140,9 @@ export function AuthProvider({children}: AuthProviderProps) {
     const {data: authListener} = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change:', event, session?.user?.email);
 
+      // Add breadcrumb for debugging
+      addBreadcrumb(`Auth state change: ${event}`, 'auth');
+
       setAuthState(prev => ({
         ...prev,
         user: session?.user ?? null,
@@ -147,8 +151,13 @@ export function AuthProvider({children}: AuthProviderProps) {
       }));
 
       // Handle specific auth events
-      if (event === 'SIGNED_OUT') {
-        // Clear any cached data here if needed
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Identify user for error tracking
+        const userMeta = session.user.user_metadata;
+        identifyUser(session.user.id, session.user.email, userMeta?.role);
+      } else if (event === 'SIGNED_OUT') {
+        // Clear user from Sentry
+        clearUser();
         console.log('User signed out, clearing cache...');
       }
     });
