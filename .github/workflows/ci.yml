@@ -217,7 +217,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: npm audit --production --audit-level critical
       - uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
