@@ -11,14 +11,13 @@ module.exports = {
   apps: {
     'ios.debug': {
       type: 'ios.app',
-      binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/TrainingVoiceMemo.app',
-      build:
-        'xcodebuild -workspace ios/TrainingVoiceMemo.xcworkspace -scheme TrainingVoiceMemo -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+      binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/trainingvoicememo.app',
+      build: 'npx expo run:ios --configuration Debug',
     },
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'cd android && ./gradlew assembleDebug',
+      build: 'npx expo run:android --variant debug',
     },
   },
   devices: {

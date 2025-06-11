@@ -114,9 +114,10 @@ export default function DataScreen() {
         const maxWeight = Math.max(...(data.weights.map(w => w.weight) || [0]));
 
         // Create progress data (last 10 workouts)
-        const progressData: ChartDataPoint[] = data.weights.slice(-10).map(w => ({
-          x: w.date,
+        const progressData: ChartDataPoint[] = data.weights.slice(-10).map((w, index) => ({
+          x: index,
           y: w.weight,
+          label: w.date,
         }));
 
         return {
@@ -260,8 +261,9 @@ export default function DataScreen() {
           data={sessions}
           renderItem={renderSessionItem}
           keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>セッションデータがありません</Text>
@@ -269,13 +271,15 @@ export default function DataScreen() {
           }
         />
       )}
+
       {viewMode === 'exercises' && (
         <FlatList
           data={exerciseProgress}
           renderItem={renderExerciseProgress}
           keyExtractor={item => item.exercise}
-          contentContainerStyle={styles.listContainer}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>種目データがありません</Text>
@@ -283,13 +287,15 @@ export default function DataScreen() {
           }
         />
       )}
+
       {viewMode === 'memos' && (
         <FlatList
           data={memoLogs}
           renderItem={renderMemoItem}
           keyExtractor={(item, index) => `memo-${index}`}
-          contentContainerStyle={styles.listContainer}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>メモがありません</Text>
