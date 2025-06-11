@@ -17,7 +17,7 @@ module.exports = {
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'npx expo run:android --variant debug',
+      build: 'cd android && ./gradlew assembleDebug',
     },
   },
   devices: {
