@@ -1,11 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import {VictoryChart, VictoryLine, VictoryArea, VictoryAxis, VictoryTheme} from 'victory-native';
-
-const screenWidth = Dimensions.get('window').width;
+import {View, Text, StyleSheet} from 'react-native';
 
 export interface ChartDataPoint {
-  x: string; // Date
+  x: number; // Index for v41 API
   y: number; // Value (weight, reps, etc.)
   label?: string;
 }
@@ -19,14 +16,7 @@ interface ExerciseChartProps {
   height?: number;
 }
 
-export default function ExerciseChart({
-  data,
-  title,
-  yAxisLabel,
-  color = '#3498db',
-  type = 'line',
-  height = 200,
-}: ExerciseChartProps) {
+export default function ExerciseChart({data, title, yAxisLabel, height = 200}: ExerciseChartProps) {
   if (!data || data.length === 0) {
     return (
       <View style={[styles.container, {height}]}>
@@ -38,83 +28,24 @@ export default function ExerciseChart({
     );
   }
 
-  // Transform data for Victory
-  const chartData = data.map((point, index) => ({
-    x: index + 1, // Use index for x-axis
-    y: point.y,
-    label: point.label || point.x,
-  }));
-
-  const maxValue = Math.max(...chartData.map(d => d.y));
-  const minValue = Math.min(...chartData.map(d => d.y));
-  const padding = (maxValue - minValue) * 0.1;
-
   return (
     <View style={[styles.container, {height: height + 60}]}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.chartContainer}>
-        <VictoryChart
-          theme={VictoryTheme.material}
-          width={screenWidth - 48}
-          height={height}
-          padding={{left: 60, top: 20, right: 40, bottom: 40}}
-          domain={{
-            y: [Math.max(0, minValue - padding), maxValue + padding],
-          }}>
-          <VictoryAxis
-            dependentAxis
-            tickFormat={t => `${t}${yAxisLabel}`}
-            style={{
-              tickLabels: {fontSize: 12, fill: '#7f8c8d'},
-              grid: {stroke: '#ecf0f1', strokeWidth: 1},
-            }}
-          />
-          <VictoryAxis
-            tickFormat={() => ''}
-            style={{
-              tickLabels: {fontSize: 12, fill: '#7f8c8d'},
-              axis: {stroke: '#bdc3c7', strokeWidth: 1},
-            }}
-          />
-
-          {type === 'area' ? (
-            <VictoryArea
-              data={chartData}
-              style={{
-                data: {fill: color, fillOpacity: 0.3, stroke: color, strokeWidth: 2},
-              }}
-              animate={{
-                duration: 1000,
-                onLoad: {duration: 500},
-              }}
-            />
-          ) : (
-            <VictoryLine
-              data={chartData}
-              style={{
-                data: {stroke: color, strokeWidth: 3},
-                parent: {border: '1px solid #ccc'},
-              }}
-              animate={{
-                duration: 1000,
-                onLoad: {duration: 500},
-              }}
-            />
-          )}
-        </VictoryChart>
-      </View>
-
-      {/* Date labels */}
-      <View style={styles.dateLabels}>
-        {data.map((point, index) => {
-          // Show every nth label to avoid overcrowding
-          const showLabel = data.length <= 5 || index % Math.ceil(data.length / 5) === 0;
-          return showLabel ? (
-            <Text key={index} style={styles.dateLabel}>
-              {point.x}
-            </Text>
-          ) : null;
-        })}
+        <View style={styles.simpleChart}>
+          <Text style={styles.chartNote}>データ視覚化: Victory Native v41 との統合を修正中</Text>
+          <View style={styles.dataPoints}>
+            {data.map((point, index) => (
+              <View key={index} style={styles.dataPoint}>
+                <Text style={styles.dataValue}>
+                  {point.y}
+                  {yAxisLabel}
+                </Text>
+                <Text style={styles.dataIndex}>{index + 1}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -152,15 +83,40 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
     fontStyle: 'italic',
   },
-  dateLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 8,
-    paddingHorizontal: 20,
+  simpleChart: {
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    minHeight: 120,
   },
-  dateLabel: {
-    fontSize: 10,
+  chartNote: {
+    fontSize: 12,
     color: '#7f8c8d',
     textAlign: 'center',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  dataPoints: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  dataPoint: {
+    alignItems: 'center',
+    margin: 4,
+    padding: 8,
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    minWidth: 50,
+  },
+  dataValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2c3e50',
+  },
+  dataIndex: {
+    fontSize: 10,
+    color: '#7f8c8d',
+    marginTop: 2,
   },
 });
