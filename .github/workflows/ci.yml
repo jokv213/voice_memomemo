@@ -117,16 +117,29 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
   # ---------- Detox iOS ----------
-  # Note: iOS E2E temporarily disabled due to RNGestureHandlerModule linking issues
-  # This requires proper native module setup which is complex in CI environment
   e2e-ios:
     name: E2E Tests (iOS)
     runs-on: macos-latest
     needs: test
-    if: false # Temporarily disabled - RNGestureHandlerModule not found issue
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Display environment info
+        run: |
+          echo "=== macOS version ==="
+          sw_vers
+          echo "=== Xcode version ==="
+          xcode-select -p
+          xcodebuild -version
+          echo "=== Available Xcode versions ==="
+          ls -la /Applications/ | grep Xcode || echo "No Xcode apps found"
+          echo "=== iOS Simulator info ==="
+          xcrun simctl list runtimes
+          echo "=== CocoaPods version ==="
+          pod --version
+          
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -165,13 +178,27 @@ jobs:
           # Boot the simulator
           xcrun simctl boot "iPhone 15 Pro" || true
 
-      - name: Build iOS app for E2E
-        run: npm run e2e:build:ios
+      - name: Build iOS app for E2E with trace logging
+        run: |
+          echo "=== Starting iOS E2E build with trace logging ==="
+          npx detox build --configuration ios.sim.debug --loglevel trace 2>&1 | tee ios-build.log
+          echo "=== Build exit code: $? ==="
 
-      - name: Run E2E tests (iOS)
-        run: npm run e2e:test:ios
+      - name: Run E2E tests (iOS) with trace logging
+        run: |
+          echo "=== Starting iOS E2E tests with trace logging ==="
+          npx detox test --configuration ios.sim.debug --loglevel trace 2>&1 | tee ios-test.log || true
+          echo "=== Test exit code: $? ==="
 
-      - name: Upload E2E test results
+      - name: Display build logs if failed
+        if: failure()
+        run: |
+          echo "=== iOS Build Log ==="
+          cat ios-build.log || echo "No build log found"
+          echo "=== iOS Test Log ==="
+          cat ios-test.log || echo "No test log found"
+
+      - name: Upload E2E test results and logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -179,6 +206,8 @@ jobs:
           path: |
             e2e/artifacts/
             e2e/test-results/
+            ios-build.log
+            ios-test.log
 
   # ---------- Detox Android ----------
   e2e-android:
