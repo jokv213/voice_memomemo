@@ -8,7 +8,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 // Initialize Sentry on app start
 initSentry();
 
-function ErrorFallback({resetError}: {error: Error; resetError: () => void}) {
+function ErrorFallback({resetError}: {error: unknown; resetError: () => void}) {
   return (
     <View style={styles.errorContainer}>
       <Text style={styles.errorTitle}>エラーが発生しました</Text>

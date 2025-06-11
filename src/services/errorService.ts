@@ -16,10 +16,8 @@ export const initSentry = () => {
     environment: __DEV__ ? 'development' : 'production',
     tracesSampleRate: __DEV__ ? 1.0 : 0.1, // 100% in dev, 10% in prod
     integrations: [
-      new Sentry.ReactNativeTracing({
-        routingInstrumentation: new Sentry.ReactNavigationInstrumentation(),
-        tracingOrigins: ['localhost', /^\//],
-      }),
+      // Sentry v6 compatible performance monitoring
+      Sentry.reactNavigationIntegration(),
     ],
     beforeSend: event => {
       // Don't send events in development
@@ -136,29 +134,30 @@ export const addBreadcrumb = (
   });
 };
 
-// Performance monitoring
-export const startTransaction = (name: string, op: string) => {
-  return Sentry.startTransaction({
-    name,
-    op,
-  });
-};
-
-// Custom performance metric
+// Performance monitoring (Sentry v6 compatible)
 export const measurePerformance = async <T>(
   name: string,
   operation: () => Promise<T>,
 ): Promise<T> => {
-  const transaction = startTransaction(name, 'custom');
+  const startTime = Date.now();
 
   try {
     const result = await operation();
-    transaction.setStatus('ok');
+    const duration = Date.now() - startTime;
+
+    addBreadcrumb(`Performance: ${name} took ${duration}ms`, 'performance', 'info', {
+      duration,
+      operation: name,
+    });
+
     return result;
   } catch (error) {
-    transaction.setStatus('internal_error');
+    const duration = Date.now() - startTime;
+    addBreadcrumb(`Performance: ${name} failed after ${duration}ms`, 'performance', 'error', {
+      duration,
+      operation: name,
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
-  } finally {
-    transaction.finish();
   }
 };

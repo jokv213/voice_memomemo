@@ -140,7 +140,7 @@ class VoiceService {
       });
 
       const {recording} = await Audio.Recording.createAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
+        Audio.RecordingOptionsPresets.HIGH_QUALITY,
       );
       this.recording = recording;
 
@@ -182,7 +182,7 @@ class VoiceService {
       await this.recording.stopAndUnloadAsync();
       const uri = this.recording.getURI() || '';
       const status = await this.recording.getStatusAsync();
-      const duration = status.isLoaded ? status.durationMillis || 0 : 0;
+      const duration = 'durationMillis' in status ? status.durationMillis || 0 : 0;
 
       this.recording = null;
       this.updateState({isRecording: false});

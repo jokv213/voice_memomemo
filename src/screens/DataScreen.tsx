@@ -82,8 +82,8 @@ export default function DataScreen() {
 
     sessions.forEach(session => {
       const sessionDate = new Date(session.date).toLocaleDateString('ja-JP', {
-        month: 'M',
-        day: 'd',
+        month: 'numeric',
+        day: 'numeric',
       });
 
       session.exerciseLogs.forEach(log => {
@@ -255,40 +255,48 @@ export default function DataScreen() {
         </View>
       </View>
 
-      <FlatList
-        data={
-          viewMode === 'sessions'
-            ? sessions
-            : viewMode === 'exercises'
-              ? exerciseProgress
-              : memoLogs
-        }
-        renderItem={
-          viewMode === 'sessions'
-            ? renderSessionItem
-            : viewMode === 'exercises'
-              ? renderExerciseProgress
-              : renderMemoItem
-        }
-        keyExtractor={(item, index) =>
-          viewMode === 'sessions'
-            ? item.id
-            : viewMode === 'exercises'
-              ? item.exercise
-              : `memo-${index}`
-        }
-        contentContainerStyle={styles.listContainer}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {viewMode === 'sessions' && 'セッションデータがありません'}
-              {viewMode === 'exercises' && '種目データがありません'}
-              {viewMode === 'memos' && 'メモがありません'}
-            </Text>
-          </View>
-        }
-      />
+      {viewMode === 'sessions' && (
+        <FlatList
+          data={sessions}
+          renderItem={renderSessionItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>セッションデータがありません</Text>
+            </View>
+          }
+        />
+      )}
+      {viewMode === 'exercises' && (
+        <FlatList
+          data={exerciseProgress}
+          renderItem={renderExerciseProgress}
+          keyExtractor={item => item.exercise}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>種目データがありません</Text>
+            </View>
+          }
+        />
+      )}
+      {viewMode === 'memos' && (
+        <FlatList
+          data={memoLogs}
+          renderItem={renderMemoItem}
+          keyExtractor={(item, index) => `memo-${index}`}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>メモがありません</Text>
+            </View>
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
