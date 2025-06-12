@@ -165,7 +165,8 @@ jobs:
 
       - name: Prebuild iOS with gesture handler
         run: |
-          npx expo prebuild --platform ios --clear
+          rm -rf ios
+          npx expo prebuild --platform ios
 
       - name: Install iOS pods with New Architecture disabled
         run: |
