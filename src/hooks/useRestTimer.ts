@@ -15,6 +15,8 @@ export function useRestTimer() {
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
       }),
     });
 
@@ -122,7 +124,7 @@ export function useRestTimer() {
           priority: 'high',
         },
         trigger: {
-          type: 'timeInterval',
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
           seconds,
         },
       });
@@ -134,9 +136,29 @@ export function useRestTimer() {
 
   const progress = totalTime > 0 ? Math.round((timeRemaining / totalTime) * 100) : 0;
 
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const adjustTime = (seconds: number) => {
+    addTime(seconds);
+  };
+
+  const setPresetTime = (seconds: number) => {
+    setTimeRemaining(seconds);
+    setTotalTime(seconds);
+  };
+
+  const getProgress = () => {
+    return progress;
+  };
+
   return {
     timeRemaining,
     isRunning,
+    isPaused: !isRunning && timeRemaining > 0,
     totalTime,
     progress,
     startTimer,
@@ -144,5 +166,10 @@ export function useRestTimer() {
     resumeTimer,
     resetTimer,
     addTime,
+    adjustTime,
+    setPresetTime,
+    formatTime: () => formatTime(timeRemaining),
+    formatTotalTime: () => formatTime(totalTime),
+    getProgress,
   };
 }

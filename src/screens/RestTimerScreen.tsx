@@ -52,7 +52,7 @@ export default function RestTimerScreen() {
     } else if (isPaused) {
       await resumeTimer();
     } else {
-      await startTimer();
+      await startTimer(selectedPreset);
     }
   };
 
