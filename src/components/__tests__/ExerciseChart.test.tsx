@@ -39,9 +39,9 @@ jest.mock('react-native', () => {
 
 describe('ExerciseChart', () => {
   const mockData = [
-    {date: '2024-01-01', weight: 100, reps: 10, volume: 1000},
-    {date: '2024-01-02', weight: 105, reps: 8, volume: 840},
-    {date: '2024-01-03', weight: 110, reps: 6, volume: 660},
+    {x: '2024-01-01', y: 100},
+    {x: '2024-01-02', y: 105},
+    {x: '2024-01-03', y: 110},
   ];
 
   afterEach(() => {
@@ -51,7 +51,7 @@ describe('ExerciseChart', () => {
   describe('rendering with data', () => {
     it('should render chart with valid data', () => {
       const {getByTestId, getByText} = render(
-        <ExerciseChart data={mockData} title="Bench Press Progress" />,
+        <ExerciseChart data={mockData} title="Bench Press Progress" yAxisLabel="Weight (kg)" />,
       );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
@@ -59,13 +59,17 @@ describe('ExerciseChart', () => {
     });
 
     it('should display chart title correctly', () => {
-      const {getByText} = render(<ExerciseChart data={mockData} title="Custom Chart Title" />);
+      const {getByText} = render(
+        <ExerciseChart data={mockData} title="Custom Chart Title" yAxisLabel="Values" />,
+      );
 
       expect(getByText('Custom Chart Title')).toBeTruthy();
     });
 
     it('should render line chart for weight data', () => {
-      const {getByTestId} = render(<ExerciseChart data={mockData} title="Weight Progress" />);
+      const {getByTestId} = render(
+        <ExerciseChart data={mockData} title="Weight Progress" yAxisLabel="Weight" />,
+      );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
       expect(getByTestId('victory-line')).toBeTruthy();
@@ -74,14 +78,18 @@ describe('ExerciseChart', () => {
 
   describe('empty state handling', () => {
     it('should render empty state when no data provided', () => {
-      const {getByText, queryByTestId} = render(<ExerciseChart data={[]} title="No Data Chart" />);
+      const {getByText, queryByTestId} = render(
+        <ExerciseChart data={[]} title="No Data Chart" yAxisLabel="Values" />,
+      );
 
       expect(getByText('No data available')).toBeTruthy();
       expect(queryByTestId('victory-chart')).toBeFalsy();
     });
 
     it('should render empty state with custom message', () => {
-      const {getByText} = render(<ExerciseChart data={[]} title="Empty Chart" />);
+      const {getByText} = render(
+        <ExerciseChart data={[]} title="Empty Chart" yAxisLabel="Values" />,
+      );
 
       expect(getByText('No data available')).toBeTruthy();
       expect(getByText('Empty Chart')).toBeTruthy();
@@ -90,10 +98,10 @@ describe('ExerciseChart', () => {
 
   describe('data formatting', () => {
     it('should handle single data point', () => {
-      const singleDataPoint = [{date: '2024-01-01', weight: 100, reps: 10, volume: 1000}];
+      const singleDataPoint = [{x: '2024-01-01', y: 100}];
 
       const {getByTestId} = render(
-        <ExerciseChart data={singleDataPoint} title="Single Point Chart" />,
+        <ExerciseChart data={singleDataPoint} title="Single Point Chart" yAxisLabel="Value" />,
       );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
@@ -101,13 +109,13 @@ describe('ExerciseChart', () => {
 
     it('should handle data with missing properties', () => {
       const incompleteData = [
-        {date: '2024-01-01', weight: 100},
-        {date: '2024-01-02', reps: 8},
-        {date: '2024-01-03', volume: 660},
+        {x: '2024-01-01', y: 100},
+        {x: '2024-01-02', y: 8},
+        {x: '2024-01-03', y: 660},
       ];
 
       const {getByTestId} = render(
-        <ExerciseChart data={incompleteData} title="Incomplete Data Chart" />,
+        <ExerciseChart data={incompleteData} title="Incomplete Data Chart" yAxisLabel="Various" />,
       );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
@@ -115,13 +123,13 @@ describe('ExerciseChart', () => {
 
     it('should handle large datasets', () => {
       const largeData = Array.from({length: 50}, (_, i) => ({
-        date: `2024-01-${String(i + 1).padStart(2, '0')}`,
-        weight: 100 + i,
-        reps: 10 - (i % 5),
-        volume: (100 + i) * (10 - (i % 5)),
+        x: `2024-01-${String(i + 1).padStart(2, '0')}`,
+        y: 100 + i,
       }));
 
-      const {getByTestId} = render(<ExerciseChart data={largeData} title="Large Dataset Chart" />);
+      const {getByTestId} = render(
+        <ExerciseChart data={largeData} title="Large Dataset Chart" yAxisLabel="Values" />,
+      );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
     });
@@ -129,14 +137,18 @@ describe('ExerciseChart', () => {
 
   describe('chart configuration', () => {
     it('should apply proper chart dimensions', () => {
-      const {getByTestId} = render(<ExerciseChart data={mockData} title="Dimension Test" />);
+      const {getByTestId} = render(
+        <ExerciseChart data={mockData} title="Dimension Test" yAxisLabel="Value" />,
+      );
 
       const chart = getByTestId('victory-chart');
       expect(chart).toBeTruthy();
     });
 
     it('should include axes in the chart', () => {
-      const {getAllByTestId} = render(<ExerciseChart data={mockData} title="Axes Test" />);
+      const {getAllByTestId} = render(
+        <ExerciseChart data={mockData} title="Axes Test" yAxisLabel="Value" />,
+      );
 
       const axes = getAllByTestId('victory-axis');
       expect(axes.length).toBeGreaterThan(0);
@@ -145,14 +157,18 @@ describe('ExerciseChart', () => {
 
   describe('accessibility', () => {
     it('should have accessible title', () => {
-      const {getByText} = render(<ExerciseChart data={mockData} title="Accessible Chart" />);
+      const {getByText} = render(
+        <ExerciseChart data={mockData} title="Accessible Chart" yAxisLabel="Value" />,
+      );
 
       const title = getByText('Accessible Chart');
       expect(title).toBeTruthy();
     });
 
     it('should provide meaningful empty state message', () => {
-      const {getByText} = render(<ExerciseChart data={[]} title="Empty Accessible Chart" />);
+      const {getByText} = render(
+        <ExerciseChart data={[]} title="Empty Accessible Chart" yAxisLabel="Value" />,
+      );
 
       expect(getByText('No data available')).toBeTruthy();
     });
@@ -160,13 +176,17 @@ describe('ExerciseChart', () => {
 
   describe('error handling', () => {
     it('should handle undefined data gracefully', () => {
-      const {getByText} = render(<ExerciseChart data={undefined as any} title="Undefined Data" />);
+      const {getByText} = render(
+        <ExerciseChart data={undefined as any} title="Undefined Data" yAxisLabel="Value" />,
+      );
 
       expect(getByText('No data available')).toBeTruthy();
     });
 
     it('should handle null data gracefully', () => {
-      const {getByText} = render(<ExerciseChart data={null as any} title="Null Data" />);
+      const {getByText} = render(
+        <ExerciseChart data={null as any} title="Null Data" yAxisLabel="Value" />,
+      );
 
       expect(getByText('No data available')).toBeTruthy();
     });
@@ -180,7 +200,7 @@ describe('ExerciseChart', () => {
       ];
 
       const {getByTestId} = render(
-        <ExerciseChart data={malformedData as any} title="Malformed Data" />,
+        <ExerciseChart data={malformedData as any} title="Malformed Data" yAxisLabel="Value" />,
       );
 
       // Should still render chart container even with bad data
@@ -196,7 +216,9 @@ describe('ExerciseChart', () => {
         height: 568,
       });
 
-      const {getByTestId} = render(<ExerciseChart data={mockData} title="Responsive Chart" />);
+      const {getByTestId} = render(
+        <ExerciseChart data={mockData} title="Responsive Chart" yAxisLabel="Value" />,
+      );
 
       expect(getByTestId('victory-chart')).toBeTruthy();
     });
