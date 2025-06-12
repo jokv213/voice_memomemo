@@ -95,28 +95,15 @@ describe('OpenAIService', () => {
   });
 
   it('should handle timeout', async () => {
-    // Mock a delayed response that times out
-    const abortController = new AbortController();
-    mockFetch.mockImplementation(
-      () =>
-        new Promise((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            abortController.abort();
-            reject(new DOMException('The operation was aborted.', 'AbortError'));
-          }, 200);
-          abortController.signal.addEventListener('abort', () => {
-            clearTimeout(timeout);
-            reject(new DOMException('The operation was aborted.', 'AbortError'));
-          });
-        }),
-    );
+    // Mock fetch to throw AbortError
+    mockFetch.mockRejectedValue(new DOMException('The operation was aborted.', 'AbortError'));
 
     const messages = [{role: 'user' as const, content: 'Test message'}];
 
     await expect(openaiService.streamChat(messages, {timeout: 100})).rejects.toThrow(
       'OpenAI request timed out',
     );
-  }, 1000);
+  });
 
   it('should apply lag tolerance', async () => {
     const mockResponse = {

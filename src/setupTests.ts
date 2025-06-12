@@ -1,4 +1,4 @@
-// Testing library v13 includes jest matchers by default
+// Jest matchers are imported via setupFilesAfterEnv in jest.config.js
 
 // Mock SecureStore
 jest.mock('expo-secure-store', () => ({
