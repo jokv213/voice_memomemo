@@ -38,6 +38,19 @@ jobs:
           npm run typecheck || (echo "❌ TypeScript compilation failed! Fix all type errors before proceeding." && exit 1)
           echo "✅ TypeScript compilation passed with zero errors"
 
+      - name: Type-check Supabase Functions
+        run: |
+          if [ -d "supabase/functions" ]; then
+            echo "Running Supabase functions type-check..."
+            npx supabase functions test --no-run || (echo "❌ Supabase functions type-check failed!" && exit 1)
+            echo "✅ Supabase functions type-check passed"
+          else
+            echo "No Supabase functions found, skipping type-check"
+          fi
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY || 'test-key' }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL || 'test@example.com' }}
+
       - name: Run tests with coverage
         run: npm run test:coverage
 

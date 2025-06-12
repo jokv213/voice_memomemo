@@ -223,6 +223,21 @@ export const auth = {
         return {data: null, error: {message: error.message, code: error.name}};
       }
 
+      // Send development confirmation email with credentials
+      try {
+        const {error: funcError} = await supabase.functions.invoke('send-confirm-dev', {
+          body: {email, password},
+        });
+
+        if (funcError) {
+          console.warn('Failed to send confirmation email:', funcError);
+          // Don't fail the signup if email sending fails
+        }
+      } catch (emailError) {
+        console.warn('Failed to invoke send-confirm-dev function:', emailError);
+        // Don't fail the signup if email sending fails
+      }
+
       return {data, error: null};
     } catch (error) {
       return {

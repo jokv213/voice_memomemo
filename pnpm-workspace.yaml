@@ -1,0 +1,6 @@
+ignoredBuiltDependencies:
+  - dtrace-provider
+
+onlyBuiltDependencies:
+  - '@sentry/cli'
+  - detox
