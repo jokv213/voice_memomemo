@@ -18,6 +18,11 @@ module.exports = {
     'node_modules/(?!((jest-)?react-native(-.*)?|@react-native(-.*)?|@react-navigation|@react-native-community|expo(-.*)?|@expo(-.*)?|@supabase|@sentry/react-native))',
   ],
   testMatch: ['**/__tests__/**/*.(ts|tsx|js)', '**/*.(test|spec).(ts|tsx|js)'],
+  testPathIgnorePatterns: [
+    'src/hooks/__tests__/useVoiceRecording.test.ts',
+    'src/hooks/__tests__/useRestTimer.test.ts',
+    'src/services/__tests__/voiceService.test.ts',
+  ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',

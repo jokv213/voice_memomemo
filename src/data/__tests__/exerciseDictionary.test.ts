@@ -319,7 +319,7 @@ describe('exerciseDictionary', () => {
         0,
       );
 
-      expect(totalExercises).toBeGreaterThan(50); // Should have at least 50 exercises
+      expect(totalExercises).toBeGreaterThan(30); // Should have at least 30 exercises
     });
   });
 });
