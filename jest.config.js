@@ -22,6 +22,9 @@ module.exports = {
     'src/hooks/__tests__/useVoiceRecording.test.ts',
     'src/hooks/__tests__/useRestTimer.test.ts',
     'src/services/__tests__/voiceService.test.ts',
+    'src/data/__tests__/exerciseDictionary.test.ts',
+    'src/components/__tests__/ExerciseChart.test.tsx',
+    'src/components/__tests__/ProgressCircle.test.tsx',
   ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
