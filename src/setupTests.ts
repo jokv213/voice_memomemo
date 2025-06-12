@@ -1,4 +1,4 @@
-import '@testing-library/react-native/extend-expect';
+// Testing library v13 includes jest matchers by default
 
 // Mock SecureStore
 jest.mock('expo-secure-store', () => ({
