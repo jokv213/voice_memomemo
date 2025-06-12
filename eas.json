@@ -1,32 +1,25 @@
 {
   "cli": {
-    "version": ">= 5.9.0",
+    "version": ">= 6.0.0",
     "requireCommit": true
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {"buildType": "apk"}
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
-      "ios": {
-        "simulator": true,
-        "buildConfiguration": "Release"
-      },
-      "android": {
-        "buildType": "apk"
-      }
+      "ios": {"simulator": true, "buildConfiguration": "Release"},
+      "android": {"buildType": "apk"}
     },
     "production": {
+      "distribution": "store",
       "channel": "production",
-      "ios": {
-        "buildConfiguration": "Release"
-      },
-      "android": {
-        "buildType": "aab"
-      }
+      "ios": {"buildConfiguration": "Release"},
+      "android": {"buildType": "app-bundle"} // ← ここを修正
     }
   },
   "submit": {
@@ -41,13 +34,6 @@
         "track": "internal"
       }
     }
-  },
-  "update": {
-    "preview": {
-      "channel": "preview"
-    },
-    "production": {
-      "channel": "production"
-    }
   }
+  // ← update ブロックは削除
 }
