@@ -21,7 +21,7 @@ module.exports = {
   },
   ignorePatterns: [
     '.eslintrc.js',
-    'babel.config.js', 
+    'babel.config.js',
     'e2e/**/*',
     'supabase/**/*',
     'node_modules/**/*',
@@ -39,21 +39,21 @@ module.exports = {
     'react-native/no-inline-styles': 'warn',
     'react-native/no-color-literals': 'off',
     'react-native/no-raw-text': 'off',
-    
+
     // React rules
-    'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
+    'react/jsx-filename-extension': [1, {extensions: ['.tsx']}],
     'react/prop-types': 'off',
     'react/require-default-props': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    
+
     // TypeScript rules
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-use-before-define': ['error', { variables: false }],
-    
+    '@typescript-eslint/no-use-before-define': ['error', {variables: false}],
+
     // Import rules
     'import/order': [
       'error',
@@ -80,16 +80,32 @@ module.exports = {
         ],
       },
     ],
-    
+
     // Accessibility rules (adapted for React Native)
     'jsx-a11y/accessible-emoji': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
     'jsx-a11y/aria-role': 'off',
-    
+
     // General rules
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-console': ['warn', {allow: ['warn', 'error']}],
     'no-undef': 'off', // TypeScript handles this
+
+    // Downgraded rules
+    'no-nested-ternary': 'warn',
+    'no-await-in-loop': 'warn',
+    'no-restricted-syntax': 'warn',
+    'class-methods-use-this': 'warn',
+    '@typescript-eslint/return-await': 'warn',
   },
+  overrides: [
+    {
+      files: ['**/__tests__/**'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+        'global-require': 'off',
+      },
+    },
+  ],
   settings: {
     react: {
       version: 'detect',

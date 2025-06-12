@@ -131,17 +131,21 @@ export default function DataScreen() {
       .sort((a, b) => b.maxWeight - a.maxWeight);
   }, [sessions]);
 
-  const memoLogs = useMemo(() => sessions
-      .flatMap(session =>
-        session.exerciseLogs
-          .filter(log => log.memo)
-          .map(log => ({
-            ...log,
-            sessionTitle: session.title,
-            date: new Date(session.date).toLocaleDateString('ja-JP'),
-          })),
-      )
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()), [sessions]);
+  const memoLogs = useMemo(
+    () =>
+      sessions
+        .flatMap(session =>
+          session.exerciseLogs
+            .filter(log => log.memo)
+            .map(log => ({
+              ...log,
+              sessionTitle: session.title,
+              date: new Date(session.date).toLocaleDateString('ja-JP'),
+            })),
+        )
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+    [sessions],
+  );
 
   const renderSessionItem = ({item}: {item: SessionWithLogs}) => (
     <View style={styles.sessionCard}>
@@ -154,8 +158,8 @@ export default function DataScreen() {
         {item.exerciseLogs.length === 0 ? (
           <Text style={styles.noExercises}>記録なし</Text>
         ) : (
-          item.exerciseLogs.map((log, index) => (
-            <View key={index} style={styles.exerciseItem}>
+          item.exerciseLogs.map(log => (
+            <View key={log.id} style={styles.exerciseItem}>
               <Text style={styles.exerciseName}>{log.exercise}</Text>
               <View style={styles.exerciseDetails}>
                 {log.weight && <Text style={styles.exerciseDetail}>{log.weight}kg</Text>}
@@ -190,12 +194,7 @@ export default function DataScreen() {
       </View>
 
       {item.progressData.length > 1 && (
-        <ExerciseChart
-          data={item.progressData}
-          title="重量の推移"
-          yAxisLabel="kg"
-          height={150}
-        />
+        <ExerciseChart data={item.progressData} title="重量の推移" yAxisLabel="kg" height={150} />
       )}
     </View>
   );

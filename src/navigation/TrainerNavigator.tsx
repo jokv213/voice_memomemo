@@ -23,17 +23,16 @@ export type TrainerStackParamList = {
 const Tab = createBottomTabNavigator<TrainerTabParamList>();
 const Stack = createStackNavigator<TrainerStackParamList>();
 
-// Stack navigator for trainer flow (client selection -> session)
-function TrainerStack() {
+// Simple emoji-based icon component
+function TabIcon({color, name}: {color: string; name: string}) {
   return (
-    <Stack.Navigator
-      initialRouteName="ClientSelection"
-      screenOptions={{
-        headerShown: false,
+    <Text
+      style={{
+        fontSize: 24,
+        opacity: color === '#3498db' ? 1 : 0.6,
       }}>
-      <Stack.Screen name="ClientSelection" component={ClientSelectionScreen} />
-      <Stack.Screen name="ClientSession" component={TrainerMainTabs} />
-    </Stack.Navigator>
+      {name}
+    </Text>
   );
 }
 
@@ -64,7 +63,7 @@ function TrainerMainTabs() {
         component={VoiceInputScreen}
         options={{
           tabBarLabel: '音声入力',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="🎤" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '🎤'}),
         }}
       />
       <Tab.Screen
@@ -72,7 +71,7 @@ function TrainerMainTabs() {
         component={DataScreen}
         options={{
           tabBarLabel: '保存データ',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="📊" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '📊'}),
         }}
       />
       <Tab.Screen
@@ -80,23 +79,24 @@ function TrainerMainTabs() {
         component={RestTimerScreen}
         options={{
           tabBarLabel: 'レストタイマー',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="⏰" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '⏰'}),
         }}
       />
     </Tab.Navigator>
   );
 }
 
-// Simple emoji-based icon component
-function TabIcon({color, name}: {color: string; name: string}) {
+// Stack navigator for trainer flow (client selection -> session)
+function TrainerStack() {
   return (
-    <Text
-      style={{
-        fontSize: 24,
-        opacity: color === '#3498db' ? 1 : 0.6,
+    <Stack.Navigator
+      initialRouteName="ClientSelection"
+      screenOptions={{
+        headerShown: false,
       }}>
-      {name}
-    </Text>
+      <Stack.Screen name="ClientSelection" component={ClientSelectionScreen} />
+      <Stack.Screen name="ClientSession" component={TrainerMainTabs} />
+    </Stack.Navigator>
   );
 }
 

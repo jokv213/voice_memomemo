@@ -14,6 +14,19 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+// Simple emoji-based icon component
+function TabIcon({color, name}: {color: string; name: string}) {
+  return (
+    <Text
+      style={{
+        fontSize: 24,
+        opacity: color === '#3498db' ? 1 : 0.6,
+      }}>
+      {name}
+    </Text>
+  );
+}
+
 export default function MainNavigator() {
   return (
     <Tab.Navigator
@@ -40,7 +53,7 @@ export default function MainNavigator() {
         component={VoiceInputScreen}
         options={{
           tabBarLabel: '音声入力',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="🎤" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '🎤'}),
         }}
       />
       <Tab.Screen
@@ -48,7 +61,7 @@ export default function MainNavigator() {
         component={DataScreen}
         options={{
           tabBarLabel: '保存データ',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="📊" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '📊'}),
         }}
       />
       <Tab.Screen
@@ -56,22 +69,9 @@ export default function MainNavigator() {
         component={RestTimerScreen}
         options={{
           tabBarLabel: 'レストタイマー',
-          tabBarIcon: ({color}) => <TabIcon color={color} name="⏰" />,
+          tabBarIcon: ({color}) => TabIcon({color, name: '⏰'}),
         }}
       />
     </Tab.Navigator>
-  );
-}
-
-// Simple emoji-based icon component
-function TabIcon({color, name}: {color: string; name: string}) {
-  return (
-    <Text
-      style={{
-        fontSize: 24,
-        opacity: color === '#3498db' ? 1 : 0.6,
-      }}>
-      {name}
-    </Text>
   );
 }
