@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: 18
+  NODE_VERSION: 20
   # Secrets 名をリポジトリ側と合わせる
   EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
   EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
@@ -170,7 +170,8 @@ jobs:
       - name: Install iOS pods with New Architecture disabled
         run: |
           cd ios
-          pod deintegrate
+          # Ensure clean state
+          rm -rf Pods Podfile.lock
           pod cache clean --all
           # Create Podfile.local to disable New Architecture
           echo "ENV['RCT_NEW_ARCH_ENABLED'] = '0'" > Podfile.local
