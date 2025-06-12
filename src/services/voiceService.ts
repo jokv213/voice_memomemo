@@ -1,6 +1,6 @@
 import {Audio} from 'expo-av';
 import Voice from '@react-native-voice/voice';
-import * as Permissions from 'expo-permissions';
+// Audio permissions are handled by expo-av Audio.Recording automatically
 import {Result} from '../lib/supabase';
 
 export interface VoiceRecording {
@@ -99,16 +99,8 @@ class VoiceService {
 
   public async requestPermissions(): Promise<Result<boolean>> {
     try {
-      // Request microphone permission
-      const {status: audioStatus} = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-
-      if (audioStatus !== 'granted') {
-        return {
-          data: null,
-          error: {message: 'Microphone permission is required for voice recording'},
-        };
-      }
-
+      // Audio permissions are handled automatically by expo-av Audio.Recording
+      // We'll check for recording permission during Audio.Recording.createAsync
       this.updateState({hasPermission: true});
       return {data: true, error: null};
     } catch (error) {
@@ -182,7 +174,7 @@ class VoiceService {
       await this.recording.stopAndUnloadAsync();
       const uri = this.recording.getURI() || '';
       const status = await this.recording.getStatusAsync();
-      const duration = status.canRecord ? status.durationMillis || 0 : 0;
+      const duration = 'durationMillis' in status ? status.durationMillis || 0 : 0;
 
       this.recording = null;
       this.updateState({isRecording: false});

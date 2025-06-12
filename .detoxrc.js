@@ -12,12 +12,13 @@ module.exports = {
     'ios.debug': {
       type: 'ios.app',
       binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/trainingvoicememo.app',
-      build: 'npx expo run:ios --configuration Debug',
+      build:
+        'xcodebuild -workspace ios/trainingvoicememo.xcworkspace -scheme trainingvoicememo -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
     },
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'npx expo run:android --variant debug',
+      build: 'cd android && ./gradlew assembleDebug',
     },
   },
   devices: {
@@ -30,7 +31,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_3a_API_30_x86',
+        avdName: 'test',
       },
     },
   },

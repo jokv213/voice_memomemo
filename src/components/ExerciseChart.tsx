@@ -1,8 +1,10 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+// Victory Native v41 imports simplified for compatibility
+// import {VictoryChart, VictoryLine, VictoryArea, VictoryAxis, VictoryTheme} from 'victory-native';
 
 export interface ChartDataPoint {
-  x: number; // Index for v41 API
+  x: string; // Date
   y: number; // Value (weight, reps, etc.)
   label?: string;
 }
@@ -28,24 +30,48 @@ export default function ExerciseChart({data, title, yAxisLabel, height = 200}: E
     );
   }
 
+  // Simplified chart display for Victory Native v41 compatibility
+  const maxValue = Math.max(...data.map(d => d.y));
+  const minValue = Math.min(...data.map(d => d.y));
+  const avgValue = data.reduce((sum, d) => sum + d.y, 0) / data.length;
+
   return (
     <View style={[styles.container, {height: height + 60}]}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.chartContainer}>
-        <View style={styles.simpleChart}>
-          <Text style={styles.chartNote}>データ視覚化: Victory Native v41 との統合を修正中</Text>
-          <View style={styles.dataPoints}>
-            {data.map((point, index) => (
-              <View key={index} style={styles.dataPoint}>
-                <Text style={styles.dataValue}>
-                  {point.y}
-                  {yAxisLabel}
-                </Text>
-                <Text style={styles.dataIndex}>{index + 1}</Text>
-              </View>
-            ))}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>最大</Text>
+            <Text style={styles.statValue}>
+              {maxValue}
+              {yAxisLabel}
+            </Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>平均</Text>
+            <Text style={styles.statValue}>
+              {avgValue.toFixed(1)}
+              {yAxisLabel}
+            </Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>最小</Text>
+            <Text style={styles.statValue}>
+              {minValue}
+              {yAxisLabel}
+            </Text>
           </View>
         </View>
+        <Text style={styles.chartNote}>データ視覚化: Victory Native v41 との統合を修正中</Text>
+      </View>
+
+      {/* Date labels */}
+      <View style={styles.dateLabels}>
+        {data.slice(-3).map((point, index) => (
+          <Text key={index} style={styles.dateLabel}>
+            {point.x}
+          </Text>
+        ))}
       </View>
     </View>
   );
@@ -83,40 +109,40 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
     fontStyle: 'italic',
   },
-  simpleChart: {
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    minHeight: 120,
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 16,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#7f8c8d',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2c3e50',
   },
   chartNote: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: '#95a5a6',
     textAlign: 'center',
-    marginBottom: 12,
     fontStyle: 'italic',
+    marginTop: 8,
   },
-  dataPoints: {
+  dateLabels: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-around',
+    marginTop: 8,
+    paddingHorizontal: 20,
   },
-  dataPoint: {
-    alignItems: 'center',
-    margin: 4,
-    padding: 8,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    minWidth: 50,
-  },
-  dataValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2c3e50',
-  },
-  dataIndex: {
+  dateLabel: {
     fontSize: 10,
     color: '#7f8c8d',
-    marginTop: 2,
+    textAlign: 'center',
   },
 });

@@ -114,10 +114,9 @@ export default function DataScreen() {
         const maxWeight = Math.max(...(data.weights.map(w => w.weight) || [0]));
 
         // Create progress data (last 10 workouts)
-        const progressData: ChartDataPoint[] = data.weights.slice(-10).map((w, index) => ({
-          x: index,
+        const progressData: ChartDataPoint[] = data.weights.slice(-10).map(w => ({
+          x: w.date,
           y: w.weight,
-          label: w.date,
         }));
 
         return {
@@ -264,6 +263,11 @@ export default function DataScreen() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>セッションデータがありません</Text>
+            </View>
+          }
         />
       )}
 
@@ -275,6 +279,11 @@ export default function DataScreen() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>種目データがありません</Text>
+            </View>
+          }
         />
       )}
 
@@ -286,6 +295,11 @@ export default function DataScreen() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>メモがありません</Text>
+            </View>
+          }
         />
       )}
     </SafeAreaView>

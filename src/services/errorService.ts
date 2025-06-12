@@ -15,6 +15,10 @@ export const initSentry = () => {
     debug: __DEV__, // Enable debug in development
     environment: __DEV__ ? 'development' : 'production',
     tracesSampleRate: __DEV__ ? 1.0 : 0.1, // 100% in dev, 10% in prod
+    integrations: [
+      // Sentry v6 compatible performance monitoring
+      Sentry.reactNavigationIntegration(),
+    ],
     beforeSend: event => {
       // Don't send events in development
       if (__DEV__) {
@@ -130,7 +134,7 @@ export const addBreadcrumb = (
   });
 };
 
-// Performance monitoring - simplified for Sentry v6
+// Performance monitoring (Sentry v6 compatible)
 export const measurePerformance = async <T>(
   name: string,
   operation: () => Promise<T>,
@@ -141,7 +145,6 @@ export const measurePerformance = async <T>(
     const result = await operation();
     const duration = Date.now() - startTime;
 
-    // Add breadcrumb for performance tracking
     addBreadcrumb(`Performance: ${name} took ${duration}ms`, 'performance', 'info', {
       duration,
       operation: name,

@@ -20,7 +20,7 @@ export default function RestTimerScreen() {
     formatTime,
     formatTotalTime,
     getProgress,
-  } = useRestTimer(60);
+  } = useRestTimer();
 
   const [selectedPreset, setSelectedPreset] = useState(60);
 
@@ -52,7 +52,7 @@ export default function RestTimerScreen() {
     } else if (isPaused) {
       await resumeTimer();
     } else {
-      await startTimer();
+      await startTimer(selectedPreset);
     }
   };
 
