@@ -1,5 +1,4 @@
-import {auth} from '../supabase';
-import {supabase} from '../supabase';
+import {auth,supabase} from '../supabase';
 
 // Mock the supabase client
 jest.mock('../supabase', () => ({

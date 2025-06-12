@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {useAuth} from '../../contexts/AuthContext';
 
 interface SignUpScreenProps {
@@ -158,16 +159,12 @@ export default function SignUpScreen({navigation}: SignUpScreenProps) {
 }
 
 const styles = StyleSheet.create({
+  buttonDisabled: {
+    backgroundColor: '#bdc3c7',
+  },
   container: {
-    flex: 1,
     backgroundColor: '#f8f9fa',
-  },
-  keyboardAvoidingView: {
     flex: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
   },
   content: {
     flex: 1,
@@ -175,106 +172,110 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#2c3e50',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#7f8c8d',
-    marginBottom: 32,
-  },
   errorContainer: {
     backgroundColor: '#fee',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderWidth: 1,
     borderColor: '#fcc',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 16,
+    padding: 12,
   },
   errorText: {
     color: '#c0392b',
-    textAlign: 'center',
     fontSize: 14,
+    textAlign: 'center',
   },
   form: {
     gap: 16,
   },
+  input: {
+    backgroundColor: '#fff',
+    borderColor: '#bdc3c7',
+    borderRadius: 8,
+    borderWidth: 1,
+    fontSize: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
   inputGroup: {
     gap: 8,
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   label: {
+    color: '#2c3e50',
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#bdc3c7',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  roleContainer: {
-    flexDirection: 'row',
-    gap: 12,
   },
   roleButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 2,
-    borderColor: '#3498db',
-    borderRadius: 8,
     alignItems: 'center',
     backgroundColor: '#fff',
+    borderColor: '#3498db',
+    borderRadius: 8,
+    borderWidth: 2,
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   roleButtonSelected: {
     backgroundColor: '#3498db',
   },
   roleButtonText: {
+    color: '#3498db',
     fontSize: 16,
     fontWeight: '600',
-    color: '#3498db',
   },
   roleButtonTextSelected: {
     color: '#fff',
   },
-  signUpButton: {
-    backgroundColor: '#27ae60',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
+  roleContainer: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  buttonDisabled: {
-    backgroundColor: '#bdc3c7',
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  signInContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 4,
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  signInLink: {
+    color: '#3498db',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  signInText: {
+    color: '#7f8c8d',
+    fontSize: 14,
+  },
+  signUpButton: {
+    alignItems: 'center',
+    backgroundColor: '#27ae60',
+    borderRadius: 8,
+    marginTop: 8,
+    paddingVertical: 16,
   },
   signUpButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
-  signInContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 16,
-  },
-  signInText: {
-    fontSize: 14,
+  subtitle: {
     color: '#7f8c8d',
+    fontSize: 18,
+    marginBottom: 32,
+    textAlign: 'center',
   },
-  signInLink: {
-    fontSize: 14,
-    color: '#3498db',
-    fontWeight: '600',
+  title: {
+    color: '#2c3e50',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
   },
 });

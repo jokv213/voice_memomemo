@@ -1,9 +1,11 @@
-import React from 'react';
 import {render} from '@testing-library/react-native';
+import React from 'react';
+
 import ExerciseChart from '../ExerciseChart';
 
 // Mock victory-native components
 const mockReact = require('react');
+
 jest.mock('victory-native', () => ({
   VictoryChart: jest.fn(({children}) => {
     const MockVictoryChart = 'VictoryChart';

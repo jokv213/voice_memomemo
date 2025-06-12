@@ -1,5 +1,5 @@
-import {useState, useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
+import {useState, useEffect, useRef} from 'react';
 
 export function useRestTimer() {
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -151,9 +151,7 @@ export function useRestTimer() {
     setTotalTime(seconds);
   };
 
-  const getProgress = () => {
-    return progress;
-  };
+  const getProgress = () => progress;
 
   return {
     timeRemaining,

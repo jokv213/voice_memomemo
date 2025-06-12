@@ -9,8 +9,9 @@ import {
   RefreshControl,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {sessionService, Session, ExerciseLog} from '../services/sessionService';
+
 import ExerciseChart, {ChartDataPoint} from '../components/ExerciseChart';
+import {SessionService, Session, ExerciseLog} from '../services/sessionService';
 
 type ViewMode = 'sessions' | 'exercises' | 'memos';
 
@@ -39,7 +40,7 @@ export default function DataScreen() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const sessionsResult = await sessionService.getUserSessions(50);
+      const sessionsResult = await SessionService.getUserSessions(50);
 
       if (sessionsResult.error) {
         Alert.alert('エラー', 'データの読み込みに失敗しました');
@@ -49,7 +50,7 @@ export default function DataScreen() {
       // Load exercise logs for each session
       const sessionsWithLogs: SessionWithLogs[] = [];
       for (const session of sessionsResult.data) {
-        const logsResult = await sessionService.getSessionLogs(session.id);
+        const logsResult = await SessionService.getSessionLogs(session.id);
         sessionsWithLogs.push({
           ...session,
           exerciseLogs: logsResult.data || [],
@@ -130,8 +131,7 @@ export default function DataScreen() {
       .sort((a, b) => b.maxWeight - a.maxWeight);
   }, [sessions]);
 
-  const memoLogs = useMemo(() => {
-    return sessions
+  const memoLogs = useMemo(() => sessions
       .flatMap(session =>
         session.exerciseLogs
           .filter(log => log.memo)
@@ -141,8 +141,7 @@ export default function DataScreen() {
             date: new Date(session.date).toLocaleDateString('ja-JP'),
           })),
       )
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  }, [sessions]);
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()), [sessions]);
 
   const renderSessionItem = ({item}: {item: SessionWithLogs}) => (
     <View style={styles.sessionCard}>
@@ -195,8 +194,6 @@ export default function DataScreen() {
           data={item.progressData}
           title="重量の推移"
           yAxisLabel="kg"
-          color="#27ae60"
-          type="line"
           height={150}
         />
       )}
@@ -307,219 +304,219 @@ export default function DataScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  header: {
-    padding: 24,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ecf0f1',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  segmentedControl: {
-    flexDirection: 'row',
-    backgroundColor: '#ecf0f1',
-    borderRadius: 8,
-    padding: 4,
-  },
-  segment: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: 6,
-  },
   activeSegment: {
     backgroundColor: '#3498db',
-  },
-  segmentText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#7f8c8d',
   },
   activeSegmentText: {
     color: '#fff',
   },
-  listContainer: {
-    padding: 16,
-  },
-  loadingContainer: {
+  container: {
+    backgroundColor: '#f8f9fa',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#7f8c8d',
   },
   emptyContainer: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     paddingVertical: 48,
   },
   emptyText: {
+    color: '#7f8c8d',
     fontSize: 16,
-    color: '#7f8c8d',
     textAlign: 'center',
-  },
-  sessionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  sessionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  sessionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2c3e50',
-    flex: 1,
-  },
-  sessionDate: {
-    fontSize: 14,
-    color: '#7f8c8d',
-  },
-  exerciseList: {
-    gap: 8,
-  },
-  noExercises: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    fontStyle: 'italic',
-    textAlign: 'center',
-    paddingVertical: 8,
-  },
-  exerciseItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ecf0f1',
-  },
-  exerciseName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 4,
-  },
-  exerciseDetails: {
-    flexDirection: 'row',
-    gap: 12,
-    flexWrap: 'wrap',
-  },
-  exerciseDetail: {
-    fontSize: 12,
-    color: '#7f8c8d',
-    backgroundColor: '#ecf0f1',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  exerciseMemo: {
-    fontSize: 12,
-    color: '#856404',
-    fontStyle: 'italic',
-    marginTop: 4,
-    backgroundColor: '#fff3cd',
-    padding: 8,
-    borderRadius: 4,
   },
   exerciseCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
     elevation: 2,
+    marginBottom: 12,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  exerciseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
   exerciseCardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
     color: '#2c3e50',
     flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
   },
-  lastPerformed: {
-    fontSize: 12,
+  exerciseDetail: {
+    backgroundColor: '#ecf0f1',
+    borderRadius: 4,
     color: '#7f8c8d',
+    fontSize: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  exerciseDetails: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  exerciseHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  exerciseItem: {
+    borderBottomColor: '#ecf0f1',
+    borderBottomWidth: 1,
+    paddingVertical: 8,
+  },
+  exerciseList: {
+    gap: 8,
+  },
+  exerciseMemo: {
+    backgroundColor: '#fff3cd',
+    borderRadius: 4,
+    color: '#856404',
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginTop: 4,
+    padding: 8,
+  },
+  exerciseName: {
+    color: '#2c3e50',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   exerciseStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 16,
   },
-  statItem: {
-    alignItems: 'center',
+  header: {
+    backgroundColor: '#fff',
+    borderBottomColor: '#ecf0f1',
+    borderBottomWidth: 1,
+    padding: 24,
   },
-  statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#27ae60',
-  },
-  statLabel: {
-    fontSize: 12,
+  lastPerformed: {
     color: '#7f8c8d',
-    marginTop: 4,
+    fontSize: 12,
+  },
+  listContainer: {
+    padding: 16,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    color: '#7f8c8d',
+    fontSize: 16,
   },
   memoCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
     elevation: 2,
+    marginBottom: 12,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  memoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+  memoDate: {
+    color: '#7f8c8d',
+    fontSize: 12,
   },
   memoExercise: {
+    color: '#2c3e50',
     fontSize: 14,
     fontWeight: '600',
-    color: '#2c3e50',
   },
-  memoDate: {
-    fontSize: 12,
-    color: '#7f8c8d',
-  },
-  memoText: {
-    fontSize: 14,
-    color: '#2c3e50',
-    lineHeight: 20,
+  memoHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
   memoSession: {
-    fontSize: 12,
     color: '#7f8c8d',
+    fontSize: 12,
     fontStyle: 'italic',
+  },
+  memoText: {
+    color: '#2c3e50',
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  noExercises: {
+    color: '#7f8c8d',
+    fontSize: 14,
+    fontStyle: 'italic',
+    paddingVertical: 8,
+    textAlign: 'center',
+  },
+  segment: {
+    alignItems: 'center',
+    borderRadius: 6,
+    flex: 1,
+    paddingVertical: 8,
+  },
+  segmentText: {
+    color: '#7f8c8d',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  segmentedControl: {
+    backgroundColor: '#ecf0f1',
+    borderRadius: 8,
+    flexDirection: 'row',
+    padding: 4,
+  },
+  sessionCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 2,
+    marginBottom: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  sessionDate: {
+    color: '#7f8c8d',
+    fontSize: 14,
+  },
+  sessionHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  sessionTitle: {
+    color: '#2c3e50',
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    color: '#7f8c8d',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  statValue: {
+    color: '#27ae60',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  title: {
+    color: '#2c3e50',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });

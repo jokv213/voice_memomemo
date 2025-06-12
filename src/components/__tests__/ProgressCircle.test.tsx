@@ -1,9 +1,11 @@
-import React from 'react';
 import {render} from '@testing-library/react-native';
+import React from 'react';
+
 import ProgressCircle from '../ProgressCircle';
 
 // Mock react-native-svg
 const mockReact = require('react');
+
 jest.mock('react-native-svg', () => ({
   Svg: jest.fn(({children, ...props}) => {
     const MockSvg = 'Svg';

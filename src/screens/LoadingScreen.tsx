@@ -16,28 +16,28 @@ export default function LoadingScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#f8f9fa',
+    flex: 1,
   },
   content: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 24,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
+  loadingText: {
+    color: '#7f8c8d',
+    fontSize: 16,
     textAlign: 'center',
-    color: '#2c3e50',
-    marginBottom: 32,
   },
   spinner: {
     marginBottom: 16,
   },
-  loadingText: {
-    fontSize: 16,
-    color: '#7f8c8d',
+  title: {
+    color: '#2c3e50',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 32,
     textAlign: 'center',
   },
 });

@@ -102,7 +102,7 @@ export async function withErrorHandling<T>(
 }
 
 // React Error Boundary component wrapper
-export const ErrorBoundary = Sentry.ErrorBoundary;
+export const {ErrorBoundary} = Sentry;
 
 // User identification for error tracking
 export const identifyUser = (userId: string, email?: string, role?: string) => {

@@ -1,5 +1,6 @@
-import React from 'react';
 import {renderHook, act} from '@testing-library/react-native';
+import React from 'react';
+
 import {AuthProvider, useAuth} from '../AuthContext';
 
 // Mock dependencies

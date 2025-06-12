@@ -1,5 +1,6 @@
-import {Audio} from 'expo-av';
 import Voice from '@react-native-voice/voice';
+import {Audio} from 'expo-av';
+
 // Audio permissions are handled by expo-av Audio.Recording automatically
 import {Result} from '../lib/supabase';
 
@@ -23,8 +24,11 @@ export interface VoiceServiceState {
 
 class VoiceService {
   private recording: Audio.Recording | null = null;
+
   private isInitialized = false;
+
   private listeners: ((state: VoiceServiceState) => void)[] = [];
+
   private state: VoiceServiceState = {
     isRecording: false,
     isTranscribing: false,

@@ -36,7 +36,7 @@ export interface CreateExerciseLogInput {
 }
 
 class SessionService {
-  async createSession(input: CreateSessionInput): Promise<Result<Session>> {
+  static async createSession(input: CreateSessionInput): Promise<Result<Session>> {
     try {
       const {data, error} = await supabase
         .from('sessions')
@@ -67,7 +67,7 @@ class SessionService {
     }
   }
 
-  async getTodaysSession(): Promise<Result<Session | null>> {
+  static async getTodaysSession(): Promise<Result<Session | null>> {
     try {
       const today = new Date().toISOString().split('T')[0];
       const user = await supabase.auth.getUser();
@@ -110,7 +110,7 @@ class SessionService {
 
   async getOrCreateTodaysSession(): Promise<Result<Session>> {
     try {
-      const sessionResult = await this.getTodaysSession();
+      const sessionResult = await SessionService.getTodaysSession();
 
       if (sessionResult.error) {
         return sessionResult;
@@ -124,7 +124,7 @@ class SessionService {
       const today = new Date();
       const title = `${today.getMonth() + 1}/${today.getDate()} トレーニング`;
 
-      return await this.createSession({
+      return SessionService.createSession({
         date: today.toISOString(),
         title,
       });
@@ -139,7 +139,7 @@ class SessionService {
     }
   }
 
-  async addExerciseLog(input: CreateExerciseLogInput): Promise<Result<ExerciseLog>> {
+  static async addExerciseLog(input: CreateExerciseLogInput): Promise<Result<ExerciseLog>> {
     try {
       const {data, error} = await supabase.from('exercise_logs').insert(input).select().single();
 
@@ -162,7 +162,7 @@ class SessionService {
     }
   }
 
-  async getSessionLogs(sessionId: string): Promise<Result<ExerciseLog[]>> {
+  static async getSessionLogs(sessionId: string): Promise<Result<ExerciseLog[]>> {
     try {
       const {data, error} = await supabase
         .from('exercise_logs')
@@ -189,7 +189,7 @@ class SessionService {
     }
   }
 
-  async getUserSessions(limit = 20): Promise<Result<Session[]>> {
+  static async getUserSessions(limit = 20): Promise<Result<Session[]>> {
     try {
       const user = await supabase.auth.getUser();
 
@@ -228,3 +228,4 @@ class SessionService {
 }
 
 export const sessionService = new SessionService();
+export {SessionService};

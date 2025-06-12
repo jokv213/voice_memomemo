@@ -1,8 +1,9 @@
-import React, {createContext, useContext, useEffect, useState, ReactNode} from 'react';
 import * as SecureStore from 'expo-secure-store';
+import React, {createContext, useContext, useEffect, useState, ReactNode, useMemo} from 'react';
+
 import {supabase, auth as authService} from '../lib/supabase';
-import {AuthContextType, AuthState} from '../types/auth';
 import {identifyUser, clearUser, addBreadcrumb} from '../services/errorService';
+import {AuthContextType, AuthState} from '../types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -16,6 +17,7 @@ export function AuthProvider({children}: AuthProviderProps) {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     session: null,
+    role: null,
     loading: true,
     error: null,
   });
@@ -124,10 +126,13 @@ export function AuthProvider({children}: AuthProviderProps) {
           return;
         }
 
+        const userRole = result.data?.session?.user?.user_metadata?.role ?? null;
+
         setAuthState(prev => ({
           ...prev,
           user: result.data?.session?.user ?? null,
           session: result.data?.session ?? null,
+          role: userRole,
           loading: false,
         }));
       } catch (error) {
@@ -143,10 +148,13 @@ export function AuthProvider({children}: AuthProviderProps) {
       // Add breadcrumb for debugging
       addBreadcrumb(`Auth state change: ${event}`, 'auth');
 
+      const userRole = session?.user?.user_metadata?.role ?? null;
+
       setAuthState(prev => ({
         ...prev,
         user: session?.user ?? null,
         session: session ?? null,
+        role: userRole,
         loading: false,
       }));
 
@@ -170,13 +178,16 @@ export function AuthProvider({children}: AuthProviderProps) {
     };
   }, []);
 
-  const value: AuthContextType = {
-    ...authState,
-    signIn,
-    signUp,
-    signOut,
-    clearError,
-  };
+  const value: AuthContextType = useMemo(
+    () => ({
+      ...authState,
+      signIn,
+      signUp,
+      signOut,
+      clearError,
+    }),
+    [authState, signIn, signUp, signOut, clearError]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

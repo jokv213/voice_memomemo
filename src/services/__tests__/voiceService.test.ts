@@ -1,5 +1,6 @@
-import {voiceService} from '../voiceService';
 import Voice from '@react-native-voice/voice';
+
+import {voiceService} from '../voiceService';
 
 // Mock @react-native-voice/voice
 jest.mock('@react-native-voice/voice', () => ({

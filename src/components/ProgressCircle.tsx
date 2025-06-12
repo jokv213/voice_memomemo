@@ -65,18 +65,18 @@ export default function ProgressCircle({
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  svg: {
-    position: 'absolute',
+    justifyContent: 'center',
   },
   content: {
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   percentage: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  svg: {
+    position: 'absolute',
   },
 });

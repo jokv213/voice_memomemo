@@ -1,6 +1,7 @@
 import {renderHook, act} from '@testing-library/react-native';
-import {useRestTimer} from '../useRestTimer';
 import * as Notifications from 'expo-notifications';
+
+import {useRestTimer} from '../useRestTimer';
 
 // Mock expo-notifications
 jest.mock('expo-notifications', () => ({

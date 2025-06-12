@@ -1,6 +1,7 @@
 import {useEffect, useState, useCallback} from 'react';
-import {voiceService, VoiceServiceState} from '../services/voiceService';
+
 import {parseExerciseFromText} from '../data/exerciseDictionary';
+import {voiceService, VoiceServiceState} from '../services/voiceService';
 
 export interface ParsedExerciseData {
   exercise?: string;

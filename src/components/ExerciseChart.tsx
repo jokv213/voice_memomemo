@@ -13,8 +13,6 @@ interface ExerciseChartProps {
   data: ChartDataPoint[];
   title: string;
   yAxisLabel: string;
-  color?: string;
-  type?: 'line' | 'area';
   height?: number;
 }
 
@@ -67,8 +65,8 @@ export default function ExerciseChart({data, title, yAxisLabel, height = 200}: E
 
       {/* Date labels */}
       <View style={styles.dateLabels}>
-        {data.slice(-3).map((point, index) => (
-          <Text key={index} style={styles.dateLabel}>
+        {data.slice(-3).map((point) => (
+          <Text key={point.x} style={styles.dateLabel}>
             {point.x}
           </Text>
         ))}
@@ -78,61 +76,31 @@ export default function ExerciseChart({data, title, yAxisLabel, height = 200}: E
 }
 
 const styles = StyleSheet.create({
+  chartContainer: {
+    alignItems: 'center',
+  },
+  chartNote: {
+    color: '#95a5a6',
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginTop: 8,
+    textAlign: 'center',
+  },
   container: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
     elevation: 3,
+    marginVertical: 8,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  chartContainer: {
-    alignItems: 'center',
-  },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noDataText: {
-    fontSize: 14,
+  dateLabel: {
     color: '#7f8c8d',
-    fontStyle: 'italic',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#7f8c8d',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-  },
-  chartNote: {
-    fontSize: 12,
-    color: '#95a5a6',
+    fontSize: 10,
     textAlign: 'center',
-    fontStyle: 'italic',
-    marginTop: 8,
   },
   dateLabels: {
     flexDirection: 'row',
@@ -140,9 +108,39 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 20,
   },
-  dateLabel: {
-    fontSize: 10,
+  noDataContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  noDataText: {
     color: '#7f8c8d',
+    fontSize: 14,
+    fontStyle: 'italic',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    color: '#7f8c8d',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  statValue: {
+    color: '#2c3e50',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 16,
+  },
+  title: {
+    color: '#2c3e50',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
     textAlign: 'center',
   },
 });

@@ -1,20 +1,44 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {Text} from 'react-native';
 
 import DataScreen from '../screens/DataScreen';
 import RestTimerScreen from '../screens/RestTimerScreen';
+import ClientSelectionScreen from '../screens/trainer/ClientSelectionScreen';
 import VoiceInputScreen from '../screens/VoiceInputScreen';
 
-export type MainTabParamList = {
+export type TrainerTabParamList = {
+  ClientSelection: undefined;
   VoiceInput: undefined;
   Data: undefined;
   RestTimer: undefined;
 };
 
-const Tab = createBottomTabNavigator<MainTabParamList>();
+export type TrainerStackParamList = {
+  ClientSelection: undefined;
+  ClientSession: {clientId: string; clientName: string};
+};
 
-export default function MainNavigator() {
+const Tab = createBottomTabNavigator<TrainerTabParamList>();
+const Stack = createStackNavigator<TrainerStackParamList>();
+
+// Stack navigator for trainer flow (client selection -> session)
+function TrainerStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="ClientSelection"
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="ClientSelection" component={ClientSelectionScreen} />
+      <Stack.Screen name="ClientSession" component={TrainerMainTabs} />
+    </Stack.Navigator>
+  );
+}
+
+// Tab navigator for when trainer is in a client session
+function TrainerMainTabs() {
   return (
     <Tab.Navigator
       initialRouteName="VoiceInput"
@@ -74,4 +98,8 @@ function TabIcon({color, name}: {color: string; name: string}) {
       {name}
     </Text>
   );
+}
+
+export default function TrainerNavigator() {
+  return <TrainerStack />;
 }

@@ -1,16 +1,38 @@
-import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import React from 'react';
+
 import {useAuth} from '../contexts/AuthContext';
-import AuthNavigator from './AuthNavigator';
-import MainNavigator from './MainNavigator';
 import LoadingScreen from '../screens/LoadingScreen';
 
+import AuthNavigator from './AuthNavigator';
+import MainNavigator from './MainNavigator';
+import TrainerNavigator from './TrainerNavigator';
+
 export default function RootNavigator() {
-  const {user, loading} = useAuth();
+  const {user, role, loading} = useAuth();
 
   if (loading) {
     return <LoadingScreen />;
   }
 
-  return <NavigationContainer>{user ? <MainNavigator /> : <AuthNavigator />}</NavigationContainer>;
+  if (!user) {
+    return (
+      <NavigationContainer>
+        <AuthNavigator />
+      </NavigationContainer>
+    );
+  }
+
+  // Role-based navigation
+  const getMainNavigator = () => {
+    switch (role) {
+      case 'trainer':
+        return <TrainerNavigator />;
+      case 'individual':
+      default:
+        return <MainNavigator />;
+    }
+  };
+
+  return <NavigationContainer>{getMainNavigator()}</NavigationContainer>;
 }

@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Animated} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {useAuth} from '../contexts/AuthContext';
 import {useVoiceRecording} from '../hooks/useVoiceRecording';
-import {sessionService, Session} from '../services/sessionService';
+import {sessionService, SessionService, Session} from '../services/sessionService';
 
 export default function VoiceInputScreen() {
   const {signOut} = useAuth();
@@ -91,7 +92,7 @@ export default function VoiceInputScreen() {
 
     setIsSaving(true);
     try {
-      const result = await sessionService.addExerciseLog({
+      const result = await SessionService.addExerciseLog({
         session_id: currentSession.id,
         exercise: parsedData.exercise || '不明な種目',
         weight: parsedData.weight,
@@ -230,46 +231,78 @@ export default function VoiceInputScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  scrollContainer: {
-    flex: 1,
-  },
-  header: {
-    padding: 24,
+  clearButton: {
     alignItems: 'center',
+    backgroundColor: '#95a5a6',
+    borderRadius: 8,
+    flex: 1,
+    paddingVertical: 12,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
+  clearButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  container: {
+    backgroundColor: '#f8f9fa',
+    flex: 1,
+  },
+  dataLabel: {
+    color: '#27ae60',
+    fontSize: 14,
+    fontWeight: '600',
+    width: 80,
+  },
+  dataRow: {
+    flexDirection: 'row',
     marginBottom: 8,
   },
-  sessionTitle: {
-    fontSize: 16,
-    color: '#7f8c8d',
+  dataValue: {
+    color: '#2c3e50',
+    flex: 1,
+    fontSize: 14,
   },
-  recordingSection: {
+  errorContainer: {
+    backgroundColor: '#fee',
+    borderColor: '#fcc',
+    borderRadius: 8,
+    borderWidth: 1,
+    margin: 16,
+    padding: 12,
+  },
+  errorText: {
+    color: '#c0392b',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  footer: {
     alignItems: 'center',
-    paddingVertical: 32,
+    padding: 24,
+  },
+  header: {
+    alignItems: 'center',
+    padding: 24,
+  },
+  memoCard: {
+    backgroundColor: '#fff3cd',
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 16,
+  },
+  memoText: {
+    color: '#856404',
+    fontSize: 14,
+    fontStyle: 'italic',
+  },
+  parsedDataSection: {
+    marginTop: 8,
   },
   recordButton: {
     marginBottom: 24,
-  },
-  recordButtonInner: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#3498db',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
   },
   recordButtonActive: {
     backgroundColor: '#e74c3c',
@@ -277,126 +310,94 @@ const styles = StyleSheet.create({
   recordButtonIcon: {
     fontSize: 48,
   },
-  recordingStatus: {
-    fontSize: 16,
-    color: '#7f8c8d',
-    textAlign: 'center',
-    paddingHorizontal: 24,
-  },
-  errorContainer: {
-    backgroundColor: '#fee',
-    padding: 12,
-    borderRadius: 8,
-    margin: 16,
-    borderWidth: 1,
-    borderColor: '#fcc',
-  },
-  errorText: {
-    color: '#c0392b',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  transcriptSection: {
-    padding: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 12,
-  },
-  transcriptCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 24,
-    elevation: 2,
+  recordButtonInner: {
+    alignItems: 'center',
+    backgroundColor: '#3498db',
+    borderRadius: 60,
+    elevation: 8,
+    height: 120,
+    justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    width: 120,
   },
-  transcriptText: {
+  recordingSection: {
+    alignItems: 'center',
+    paddingVertical: 32,
+  },
+  recordingStatus: {
+    color: '#7f8c8d',
     fontSize: 16,
-    color: '#2c3e50',
-    lineHeight: 24,
-  },
-  parsedDataSection: {
-    marginTop: 8,
-  },
-  structuredDataCard: {
-    backgroundColor: '#e8f5e8',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  dataRow: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  dataLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#27ae60',
-    width: 80,
-  },
-  dataValue: {
-    fontSize: 14,
-    color: '#2c3e50',
-    flex: 1,
-  },
-  memoCard: {
-    backgroundColor: '#fff3cd',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  memoText: {
-    fontSize: 14,
-    color: '#856404',
-    fontStyle: 'italic',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
+    paddingHorizontal: 24,
+    textAlign: 'center',
   },
   saveButton: {
-    flex: 1,
-    backgroundColor: '#27ae60',
-    paddingVertical: 12,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#27ae60',
+    borderRadius: 8,
+    flex: 1,
+    paddingVertical: 12,
   },
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
-  clearButton: {
+  scrollContainer: {
     flex: 1,
-    backgroundColor: '#95a5a6',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
   },
-  clearButtonText: {
-    color: '#fff',
-    fontSize: 16,
+  sectionTitle: {
+    color: '#2c3e50',
+    fontSize: 18,
     fontWeight: '600',
+    marginBottom: 12,
   },
-  footer: {
-    padding: 24,
-    alignItems: 'center',
+  sessionTitle: {
+    color: '#7f8c8d',
+    fontSize: 16,
   },
   signOutButton: {
     backgroundColor: '#e74c3c',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
     borderRadius: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
   signOutButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  structuredDataCard: {
+    backgroundColor: '#e8f5e8',
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 16,
+  },
+  title: {
+    color: '#2c3e50',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  transcriptCard: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 2,
+    marginBottom: 24,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  transcriptSection: {
+    padding: 24,
+  },
+  transcriptText: {
+    color: '#2c3e50',
+    fontSize: 16,
+    lineHeight: 24,
   },
 });

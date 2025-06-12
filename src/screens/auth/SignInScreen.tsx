@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {useAuth} from '../../contexts/AuthContext';
 
 interface SignInScreenProps {
@@ -116,16 +117,40 @@ export default function SignInScreen({navigation}: SignInScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
+  buttonDisabled: {
+    backgroundColor: '#bdc3c7',
   },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
+  checkbox: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderColor: '#3498db',
+    borderRadius: 4,
+    borderWidth: 2,
+    height: 20,
     justifyContent: 'center',
+    width: 20,
+  },
+  checkboxChecked: {
+    backgroundColor: '#3498db',
+  },
+  checkboxContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    marginVertical: 8,
+  },
+  checkboxLabel: {
+    color: '#2c3e50',
+    fontSize: 14,
+  },
+  checkboxMark: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  container: {
+    backgroundColor: '#f8f9fa',
+    flex: 1,
   },
   content: {
     flex: 1,
@@ -133,89 +158,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#2c3e50',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#7f8c8d',
-    marginBottom: 32,
-  },
   errorContainer: {
     backgroundColor: '#fee',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderWidth: 1,
     borderColor: '#fcc',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 16,
+    padding: 12,
   },
   errorText: {
     color: '#c0392b',
-    textAlign: 'center',
     fontSize: 14,
+    textAlign: 'center',
   },
   form: {
     gap: 16,
   },
+  input: {
+    backgroundColor: '#fff',
+    borderColor: '#bdc3c7',
+    borderRadius: 8,
+    borderWidth: 1,
+    fontSize: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
   inputGroup: {
     gap: 8,
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   label: {
+    color: '#2c3e50',
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#bdc3c7',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginVertical: 8,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderColor: '#3498db',
-    borderRadius: 4,
-    alignItems: 'center',
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  checkboxChecked: {
-    backgroundColor: '#3498db',
-  },
-  checkboxMark: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  checkboxLabel: {
-    fontSize: 14,
-    color: '#2c3e50',
   },
   signInButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 16,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#3498db',
+    borderRadius: 8,
     marginTop: 8,
-  },
-  buttonDisabled: {
-    backgroundColor: '#bdc3c7',
+    paddingVertical: 16,
   },
   signInButtonText: {
     color: '#fff',
@@ -223,19 +211,32 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 4,
+    justifyContent: 'center',
     marginTop: 16,
   },
-  signUpText: {
-    fontSize: 14,
-    color: '#7f8c8d',
-  },
   signUpLink: {
-    fontSize: 14,
     color: '#3498db',
+    fontSize: 14,
     fontWeight: '600',
+  },
+  signUpText: {
+    color: '#7f8c8d',
+    fontSize: 14,
+  },
+  subtitle: {
+    color: '#7f8c8d',
+    fontSize: 18,
+    marginBottom: 32,
+    textAlign: 'center',
+  },
+  title: {
+    color: '#2c3e50',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
   },
 });
