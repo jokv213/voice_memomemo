@@ -1,7 +1,8 @@
 {
   "cli": {
-    "version": ">= 6.0.0",
-    "requireCommit": true
+    "version": ">=6.0.0",
+    "requireCommit": true,
+    "appVersionSource": "expo-application"
   },
   "build": {
     "development": {
