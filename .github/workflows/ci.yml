@@ -251,7 +251,8 @@ jobs:
 
       - name: Prebuild Android with New Architecture disabled
         run: |
-          npx expo prebuild --platform android --clear
+          rm -rf android
+          npx expo prebuild --platform android
           # Ensure newArchEnabled is false
           sed -i 's/newArchEnabled=true/newArchEnabled=false/g' android/gradle.properties || true
           
