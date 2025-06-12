@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import {ProgressCircle} from '../ProgressCircle';
+import ProgressCircle from '../ProgressCircle';
 
 // Mock react-native-svg
 const mockReact = require('react');

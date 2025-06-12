@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import {ExerciseChart} from '../ExerciseChart';
+import ExerciseChart from '../ExerciseChart';
 
 // Mock victory-native components
 const mockReact = require('react');

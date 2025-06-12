@@ -307,7 +307,7 @@ describe('exerciseDictionary', () => {
     });
 
     it('should have non-empty categories', () => {
-      Object.values(EXERCISE_KEYWORDS).forEach(category => {
+      Object.values(EXERCISE_KEYWORDS).forEach((category: string[]) => {
         expect(Array.isArray(category)).toBe(true);
         expect(category.length).toBeGreaterThan(0);
       });
@@ -315,7 +315,7 @@ describe('exerciseDictionary', () => {
 
     it('should contain expected number of exercises', () => {
       const totalExercises = Object.values(EXERCISE_KEYWORDS).reduce(
-        (sum, category) => sum + category.length,
+        (sum: number, category: string[]) => sum + category.length,
         0,
       );
 
