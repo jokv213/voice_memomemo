@@ -9,15 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **OpenAI Integration**: GPT-4o-mini streaming formatter for exercise and memo data
+- LLM service layer with formatExercise() and formatMemo() functions
+- AI-powered data structuring with fallback to original parsed data
+- Comprehensive test suite for LLM integration (snapshots, mocks, E2E)
 - Initial project setup with Expo SDK 53 and TypeScript
 - Supabase backend integration with authentication
 - Database schema with Row Level Security (RLS)
-- ESLint and Prettier configuration
+- ESLint airbnb-typescript configuration with 0 errors
 - Jest unit testing setup
 - Detox E2E testing configuration
 - GitHub Actions CI/CD pipeline
 - Husky pre-commit hooks
 - EAS Build and Update configuration
+- Sentry error tracking integration
 
 ### Security
 

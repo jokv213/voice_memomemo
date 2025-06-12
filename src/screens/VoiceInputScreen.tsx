@@ -4,6 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useAuth} from '../contexts/AuthContext';
 import {useVoiceRecording} from '../hooks/useVoiceRecording';
+import {formatExercise, formatMemo} from '../llm';
 import {sessionService, SessionService, Session} from '../services/sessionService';
 
 export default function VoiceInputScreen() {
@@ -92,14 +93,47 @@ export default function VoiceInputScreen() {
 
     setIsSaving(true);
     try {
+      // Format exercise data with OpenAI
+      let formattedExercise;
+      let formattedMemo;
+
+      try {
+        formattedExercise = await formatExercise(currentTranscript || '', {
+          exercise: parsedData.exercise,
+          weight: parsedData.weight,
+          reps: parsedData.reps,
+          sets: parsedData.sets,
+          side: parsedData.side,
+        });
+
+        // Format memo if there's unstructured text
+        if (!parsedData.isStructured && parsedData.originalText) {
+          formattedMemo = await formatMemo(currentTranscript || '', {
+            content: parsedData.originalText,
+            exercise: formattedExercise.exercise,
+          });
+        }
+      } catch (llmError) {
+        // Show toast/alert for LLM error but continue with original data
+        Alert.alert('AI処理エラー', 'データの整形に失敗しましたが、元のデータで保存を続行します');
+        formattedExercise = {
+          exercise: parsedData.exercise || '不明な種目',
+          weight: parsedData.weight,
+          reps: parsedData.reps,
+          sets: parsedData.sets,
+          side: parsedData.side,
+        };
+        formattedMemo = parsedData.originalText;
+      }
+
       const result = await SessionService.addExerciseLog({
         session_id: currentSession.id,
-        exercise: parsedData.exercise || '不明な種目',
-        weight: parsedData.weight,
-        side: parsedData.side,
-        reps: parsedData.reps,
-        sets: parsedData.sets,
-        memo: parsedData.isStructured ? undefined : parsedData.originalText,
+        exercise: formattedExercise.exercise,
+        weight: formattedExercise.weight,
+        side: formattedExercise.side,
+        reps: formattedExercise.reps,
+        sets: formattedExercise.sets,
+        memo: formattedMemo || (parsedData.isStructured ? undefined : parsedData.originalText),
       });
 
       if (result.error) {
@@ -108,7 +142,7 @@ export default function VoiceInputScreen() {
         Alert.alert('成功', 'トレーニングデータを保存しました');
         clearTranscript();
       }
-    } catch {
+    } catch (saveError) {
       Alert.alert('エラー', '保存に失敗しました');
     } finally {
       setIsSaving(false);

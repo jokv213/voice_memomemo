@@ -17,6 +17,7 @@
 ### 主な機能
 
 - 🎙️ **音声入力**: 日本語音声認識でトレーニング内容を記録
+- 🤖 **AI データ整形**: OpenAI GPT-4o-miniによる音声データの自動整理・構造化
 - 📊 **データ可視化**: トレーニング進捗をグラフで確認
 - ⏱️ **レストタイマー**: セット間の休憩時間を管理
 - 👥 **トレーナー連携**: トレーナーとクライアントの関係管理
@@ -47,10 +48,11 @@ npm start
 - **PostgreSQL** - データストレージ
 - **Row Level Security** - データアクセス制御
 
-### 音声処理
+### 音声処理・AI
 
 - **expo-av** - 音声録音・権限管理
 - **@react-native-voice/voice** 3.1.5 - 音声認識（セキュリティ修正版）
+- **OpenAI GPT-4o-mini** - ストリーミング音声データ整形・構造化
 
 ### UI/UX
 
@@ -99,6 +101,7 @@ npm install
 EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 EXPO_PUBLIC_SENTRY_DSN=your_sentry_dsn
+EXPO_PUBLIC_OPENAI_API_KEY=your_openai_api_key
 ```
 
 4. Supabaseデータベースをセットアップ
@@ -312,6 +315,7 @@ CODECOV_TOKEN=your_codecov_token
 EXPO_PUBLIC_SUPABASE_URL=your_local_supabase_url
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_local_supabase_key
 EXPO_PUBLIC_SENTRY_DSN=your_dev_sentry_dsn
+EXPO_PUBLIC_OPENAI_API_KEY=your_openai_api_key
 ```
 
 ### GitHub Secrets Configuration
