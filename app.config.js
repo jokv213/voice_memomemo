@@ -46,6 +46,7 @@ export default {
       bundler: 'metro',
     },
     plugins: [
+      './plugins/withAndroidSupportExcludes',
       'expo-secure-store',
       [
         'expo-av',
