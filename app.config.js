@@ -65,7 +65,7 @@ export default {
     ],
     extra: {
       eas: {
-        projectId: process.env.EAS_PROJECT_ID,
+        projectId: '7816bb1d-7734-4e41-b9b6-d8ebe9e91082',
       },
       supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
       supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
@@ -73,7 +73,7 @@ export default {
       openaiApiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     },
     updates: {
-      url: 'https://u.expo.dev/your-eas-project-id',
+      url: 'https://u.expo.dev/7816bb1d-7734-4e41-b9b6-d8ebe9e91082',
     },
     runtimeVersion: {
       policy: 'appVersion',
