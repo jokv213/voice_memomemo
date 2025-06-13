@@ -119,7 +119,11 @@ export default function RestTimerScreen() {
             style={[styles.mainButton, isRunning ? styles.pauseButton : styles.startButton]}
             onPress={handleStartPause}>
             <Text style={styles.mainButtonText}>
-              {isRunning ? '⏸️ 一時停止' : isPaused ? '▶️ 再開' : '▶️ 開始'}
+              {(() => {
+                if (isRunning) return '⏸️ 一時停止';
+                if (isPaused) return '▶️ 再開';
+                return '▶️ 開始';
+              })()}
             </Text>
           </TouchableOpacity>
 

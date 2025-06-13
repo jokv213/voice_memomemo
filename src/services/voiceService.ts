@@ -14,6 +14,11 @@ export interface VoiceTranscription {
   confidence: number;
 }
 
+interface SpeechEvent {
+  value?: string[];
+  error?: string;
+}
+
 export interface VoiceServiceState {
   isRecording: boolean;
   isTranscribing: boolean;
@@ -64,7 +69,7 @@ class VoiceService {
     this.updateState({isTranscribing: false});
   };
 
-  private onSpeechResults = (event: any): void => {
+  private onSpeechResults = (event: SpeechEvent): void => {
     const results = event.value || [];
     const transcript = results[0] || '';
     this.updateState({
@@ -73,13 +78,13 @@ class VoiceService {
     });
   };
 
-  private onSpeechPartialResults = (event: any): void => {
+  private onSpeechPartialResults = (event: SpeechEvent): void => {
     const results = event.value || [];
     const transcript = results[0] || '';
     this.updateState({currentTranscript: transcript});
   };
 
-  private onSpeechError = (event: any): void => {
+  private onSpeechError = (event: SpeechEvent): void => {
     this.updateState({
       isTranscribing: false,
       error: event.error?.message || 'Speech recognition error',

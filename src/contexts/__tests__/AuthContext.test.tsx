@@ -13,6 +13,10 @@ jest.mock('expo-secure-store', () => ({
 jest.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
+      getSession: jest.fn(() => Promise.resolve({
+        data: { session: null },
+        error: null
+      })),
       onAuthStateChange: jest.fn(() => ({
         data: {subscription: {unsubscribe: jest.fn()}},
       })),
@@ -22,7 +26,6 @@ jest.mock('../../lib/supabase', () => ({
     signInWithPassword: jest.fn(),
     signUp: jest.fn(),
     signOut: jest.fn(),
-    getSession: jest.fn(),
   },
 }));
 

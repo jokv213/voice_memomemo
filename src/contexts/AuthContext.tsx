@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import React, {createContext, useContext, useEffect, useState, ReactNode, useMemo} from 'react';
+import React, {createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback} from 'react';
 
 import {supabase, auth as authService} from '../lib/supabase';
 import {identifyUser, clearUser, addBreadcrumb} from '../services/errorService';
@@ -22,11 +22,11 @@ export function AuthProvider({children}: AuthProviderProps) {
     error: null,
   });
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     setAuthState(prev => ({...prev, error: null}));
-  };
+  }, []);
 
-  const signIn = async (email: string, password: string, rememberMe = false) => {
+  const signIn = useCallback(async (email: string, password: string, rememberMe = false) => {
     try {
       setAuthState(prev => ({...prev, loading: true, error: null}));
 
@@ -57,9 +57,9 @@ export function AuthProvider({children}: AuthProviderProps) {
         error: error instanceof Error ? error.message : 'Failed to sign in',
       }));
     }
-  };
+  }, []);
 
-  const signUp = async (email: string, password: string, role: 'individual' | 'trainer') => {
+  const signUp = useCallback(async (email: string, password: string, role: 'individual' | 'trainer') => {
     try {
       setAuthState(prev => ({...prev, loading: true, error: null}));
 
@@ -83,9 +83,9 @@ export function AuthProvider({children}: AuthProviderProps) {
         error: error instanceof Error ? error.message : 'Failed to sign up',
       }));
     }
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       setAuthState(prev => ({...prev, loading: true, error: null}));
 
@@ -112,7 +112,7 @@ export function AuthProvider({children}: AuthProviderProps) {
         error: error instanceof Error ? error.message : 'Failed to sign out',
       }));
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Get initial session
@@ -143,7 +143,7 @@ export function AuthProvider({children}: AuthProviderProps) {
 
     // Listen for auth state changes
     const {data: authListener} = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change:', event, session?.user?.email);
+      addBreadcrumb(`Auth state change: ${event} (${session?.user?.email || 'no user'})`, 'auth');
 
       // Add breadcrumb for debugging
       addBreadcrumb(`Auth state change: ${event}`, 'auth');
@@ -166,7 +166,7 @@ export function AuthProvider({children}: AuthProviderProps) {
       } else if (event === 'SIGNED_OUT') {
         // Clear user from Sentry
         clearUser();
-        console.log('User signed out, clearing cache...');
+        addBreadcrumb('User signed out, clearing cache', 'auth');
       }
     });
 

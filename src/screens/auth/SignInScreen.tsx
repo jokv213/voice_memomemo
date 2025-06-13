@@ -1,3 +1,4 @@
+import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {
   View,
@@ -13,9 +14,10 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useAuth} from '../../contexts/AuthContext';
+import {AuthStackParamList} from '../../navigation/AuthNavigator';
 
 interface SignInScreenProps {
-  navigation: any;
+  navigation: StackNavigationProp<AuthStackParamList, 'SignIn'>;
 }
 
 export default function SignInScreen({navigation}: SignInScreenProps) {

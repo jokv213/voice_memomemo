@@ -14,8 +14,6 @@ module.exports = {
     'src/data/__tests__/exerciseDictionary.test.ts',
     'src/components/__tests__/ExerciseChart.test.tsx',
     'src/components/__tests__/ProgressCircle.test.tsx',
-    'src/contexts/__tests__/AuthContext.test.tsx',
-    'src/lib/__tests__/supabase.test.ts',
     'src/lib/__tests__/authService.test.ts',
     'src/llm/__tests__/openai.test.ts',
     'src/llm/__tests__/formatMemoPrompt.test.ts',

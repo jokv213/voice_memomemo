@@ -22,7 +22,7 @@ export const initSentry = () => {
     beforeSend: event => {
       // Don't send events in development
       if (__DEV__) {
-        console.log('Sentry Event (dev):', event);
+        // Don't send events in development (silent)
         return null;
       }
       return event;
@@ -31,7 +31,7 @@ export const initSentry = () => {
 };
 
 // Capture and report error to Sentry
-export const captureError = (error: Error | unknown, context?: Record<string, any>) => {
+export const captureError = (error: Error | unknown, context?: Record<string, unknown>) => {
   console.error('App Error:', error);
 
   if (error instanceof Error) {
@@ -123,7 +123,7 @@ export const addBreadcrumb = (
   message: string,
   category: string,
   level: Sentry.SeverityLevel = 'info',
-  data?: Record<string, any>,
+  data?: Record<string, unknown>,
 ) => {
   Sentry.addBreadcrumb({
     message,

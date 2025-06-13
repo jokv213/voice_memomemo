@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Animated} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -24,21 +24,9 @@ export default function VoiceInputScreen() {
 
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const pulseAnimation = new Animated.Value(1);
+  const pulseAnimation = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    loadTodaysSession();
-  }, []);
-
-  useEffect(() => {
-    if (isRecording) {
-      startPulseAnimation();
-    } else {
-      stopPulseAnimation();
-    }
-  }, [isRecording]);
-
-  const startPulseAnimation = () => {
+  const startPulseAnimation = useCallback(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnimation, {
@@ -53,16 +41,28 @@ export default function VoiceInputScreen() {
         }),
       ]),
     ).start();
-  };
+  }, [pulseAnimation]);
 
-  const stopPulseAnimation = () => {
+  const stopPulseAnimation = useCallback(() => {
     pulseAnimation.stopAnimation();
     Animated.timing(pulseAnimation, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
-  };
+  }, [pulseAnimation]);
+
+  useEffect(() => {
+    loadTodaysSession();
+  }, []);
+
+  useEffect(() => {
+    if (isRecording) {
+      startPulseAnimation();
+    } else {
+      stopPulseAnimation();
+    }
+  }, [isRecording, startPulseAnimation, stopPulseAnimation]);
 
   const loadTodaysSession = async () => {
     const result = await sessionService.getOrCreateTodaysSession();
@@ -172,11 +172,11 @@ export default function VoiceInputScreen() {
           </Animated.View>
 
           <Text style={styles.recordingStatus}>
-            {isRecording
-              ? '録音中...'
-              : isTranscribing
-                ? '音声認識中...'
-                : '録音ボタンを押してトレーニングを記録'}
+            {(() => {
+              if (isRecording) return '録音中...';
+              if (isTranscribing) return '音声認識中...';
+              return '録音ボタンを押してトレーニングを記録';
+            })()}
           </Text>
 
           {error && (

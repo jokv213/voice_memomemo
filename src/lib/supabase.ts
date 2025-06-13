@@ -1,6 +1,6 @@
 import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createClient} from '@supabase/supabase-js';
+import {createClient, AuthResponse} from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
 
 const supabaseUrl = 'https://cyfcwckeqocmlwdpjjjn.supabase.co';
@@ -169,18 +169,10 @@ export type Result<T, E = AppError> =
       error: E;
     };
 
-// Utility function to create typed Supabase client
-export function getSupabaseClient() {
-  return supabase as typeof supabase & {
-    from: <T extends keyof Database['public']['Tables']>(
-      table: T,
-    ) => Database['public']['Tables'][T];
-  };
-}
 
 // Auth helpers
 export const auth = {
-  async signInWithPassword(email: string, password: string): Promise<Result<any>> {
+  async signInWithPassword(email: string, password: string): Promise<Result<AuthResponse['data']>> {
     try {
       const {data, error} = await supabase.auth.signInWithPassword({
         email,
@@ -207,7 +199,7 @@ export const auth = {
     email: string,
     password: string,
     role: 'individual' | 'trainer',
-  ): Promise<Result<any>> {
+  ): Promise<Result<AuthResponse['data']>> {
     try {
       const {data, error} = await supabase.auth.signUp({
         email,

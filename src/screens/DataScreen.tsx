@@ -27,6 +27,11 @@ interface ExerciseProgress {
   progressData: ChartDataPoint[];
 }
 
+interface MemoLogItem extends ExerciseLog {
+  sessionTitle: string;
+  date: string;
+}
+
 export default function DataScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>('sessions');
   const [sessions, setSessions] = useState<SessionWithLogs[]>([]);
@@ -199,7 +204,7 @@ export default function DataScreen() {
     </View>
   );
 
-  const renderMemoItem = ({item}: {item: any}) => (
+  const renderMemoItem = ({item}: {item: MemoLogItem}) => (
     <View style={styles.memoCard}>
       <View style={styles.memoHeader}>
         <Text style={styles.memoExercise}>{item.exercise}</Text>

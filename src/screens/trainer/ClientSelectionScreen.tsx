@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -12,6 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useAuth} from '../../contexts/AuthContext';
 import {supabase} from '../../lib/supabase';
+import {TrainerStackParamList} from '../../navigation/TrainerNavigator';
 
 interface Client {
   id: string;
@@ -19,8 +21,17 @@ interface Client {
   created_at: string;
 }
 
+interface TrainerClientRow {
+  client_id: string;
+  profiles: {
+    id: string;
+    email: string;
+    created_at: string;
+  } | null;
+}
+
 interface ClientSelectionScreenProps {
-  navigation: any;
+  navigation: StackNavigationProp<TrainerStackParamList, 'ClientSelection'>;
 }
 
 export default function ClientSelectionScreen({navigation}: ClientSelectionScreenProps) {
@@ -29,11 +40,7 @@ export default function ClientSelectionScreen({navigation}: ClientSelectionScree
   const [error, setError] = useState<string | null>(null);
   const {user, signOut} = useAuth();
 
-  useEffect(() => {
-    loadClients();
-  }, []);
-
-  const loadClients = async () => {
+  const loadClients = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -65,7 +72,7 @@ export default function ClientSelectionScreen({navigation}: ClientSelectionScree
       // Transform the data to match our Client interface
       const clientList: Client[] =
         trainerClients
-          ?.map((tc: any) => ({
+          ?.map((tc: TrainerClientRow) => ({
             id: tc.profiles?.id || '',
             email: tc.profiles?.email || '',
             created_at: tc.profiles?.created_at || '',
@@ -79,7 +86,11 @@ export default function ClientSelectionScreen({navigation}: ClientSelectionScree
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadClients();
+  }, [loadClients]);
 
   const selectClient = (client: Client) => {
     // Navigate to client session with selected client info

@@ -1,7 +1,7 @@
 import {render} from '@testing-library/react-native';
 import React from 'react';
 
-import ExerciseChart from '../ExerciseChart';
+import ExerciseChart, {ChartDataPoint} from '../ExerciseChart';
 
 // Mock victory-native components
 const mockReact = require('react');
@@ -179,7 +179,7 @@ describe('ExerciseChart', () => {
   describe('error handling', () => {
     it('should handle undefined data gracefully', () => {
       const {getByText} = render(
-        <ExerciseChart data={undefined as any} title="Undefined Data" yAxisLabel="Value" />,
+        <ExerciseChart data={undefined as unknown as ChartDataPoint[]} title="Undefined Data" yAxisLabel="Value" />,
       );
 
       expect(getByText('No data available')).toBeTruthy();
@@ -187,7 +187,7 @@ describe('ExerciseChart', () => {
 
     it('should handle null data gracefully', () => {
       const {getByText} = render(
-        <ExerciseChart data={null as any} title="Null Data" yAxisLabel="Value" />,
+        <ExerciseChart data={null as unknown as ChartDataPoint[]} title="Null Data" yAxisLabel="Value" />,
       );
 
       expect(getByText('No data available')).toBeTruthy();
@@ -202,7 +202,7 @@ describe('ExerciseChart', () => {
       ];
 
       const {getByTestId} = render(
-        <ExerciseChart data={malformedData as any} title="Malformed Data" yAxisLabel="Value" />,
+        <ExerciseChart data={malformedData as unknown as ChartDataPoint[]} title="Malformed Data" yAxisLabel="Value" />,
       );
 
       // Should still render chart container even with bad data

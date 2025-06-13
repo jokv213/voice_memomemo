@@ -176,13 +176,13 @@ describe('ProgressCircle', () => {
     });
 
     it('should handle undefined progress', () => {
-      const {getByText} = render(<ProgressCircle progress={undefined as any} size={100} />);
+      const {getByText} = render(<ProgressCircle progress={undefined as unknown as number} size={100} />);
 
       expect(getByText('0%')).toBeTruthy();
     });
 
     it('should handle null progress', () => {
-      const {getByText} = render(<ProgressCircle progress={null as any} size={100} />);
+      const {getByText} = render(<ProgressCircle progress={null as unknown as number} size={100} />);
 
       expect(getByText('0%')).toBeTruthy();
     });
